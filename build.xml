@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!-- Created by: Aaron  -->
 
-<project name="tympani" default="build" basedir=".">
+<project name="dendron" default="build" basedir=".">
     <!-- ************* Properties *************  -->
     <property environment="env"/>
     <property name="scala.home" value="${env.SCALA_HOME}"/>
@@ -22,7 +22,6 @@
       <pathelement location="${scala-library.jar}"/>
       <pathelement location="${build.dir}"/>
       <pathelement location="${utilities.dir}"/>
-      <pathelement location="${base.dir}/lib/mxclone"/>
     </path>
     <taskdef resource="scala/tools/ant/antlib.xml">
       <classpath>
