@@ -1,57 +1,67 @@
 package net.harnly.dendron
 
-case class SimpleVertex[A](label: A)
-extends Vertex
+case class SimpleGraphs[V <: Vertex, E <: Edge[V]]
+extends Graphs[V,E]
 {
-	type VertexType = SimpleVertex[A]
-}
-
-case class SimpleEdge[V <: Vertex](
-	tail: V,
-	head: V
-)
-extends Edge[V]
-{
-	type EdgeType = SimpleEdge[V]
-	def invert = new SimpleEdge(head, tail)
-}
-
-case class SimpleWeightedEdge[V <: Vertex](
-	override val tail: V,
-	override val head: V,
-	weight: Double
-)
-extends SimpleEdge(tail, head)
-with WeightedEdge[V]
-
-case class SimpleGraph[V <: Vertex,E <: Edge[V]](
-	vertices: Set[V],
-	edges: Set[E]
-)
-extends Graph[V,E]
-{
-	def this(vertexList: Seq[V], edgeList: Seq[E]) = this(
-		collection.immutable.Set(vertexList : _*) ,
-		collection.immutable.Set(edgeList : _*) 
+	type GraphType = SimpleGraph
+	case class SimpleGraph(
+		vertices: Set[V],
+		edges: Set[E]
 	)
+	extends Graph
+	{
+		this: GraphType =>
+		def this(vertexList: Seq[V], edgeList: Seq[E]) = this(
+			collection.immutable.Set(vertexList : _*) ,
+			collection.immutable.Set(edgeList : _*) 
+		)
+
+		def asGraphType = this
+
+		// mutators
+		def addVertex(vertex: V): GraphType = new SimpleGraph(
+			vertices + vertex,
+			edges
+		)
+
+		def addEdge(edge: E): GraphType = {
+			val oneVertex = edge.oneVertex
+			new SimpleGraph(
+				vertices ++ List(oneVertex, edge.otherVertex(oneVertex)),
+				edges + edge
+			)
+		}
+
+		def removeVertex(vertex: V): GraphType = {
+			val touchingEdges = edgesOf(vertex)
+			new SimpleGraph(
+				vertices - vertex,
+				edges -- touchingEdges
+			)
+		}
+
+		def removeEdge(edge: E): GraphType = {
+			// remove the edge, and also the vertices if this is the only edge with the vertex
+			val newEdges = edges - edge
+			val verticesToRemove = edge.filter{ v =>
+				! newEdges.exists( e =>
+					e.contains(v)
+				)
+			}
+			new SimpleGraph(
+				vertices -- verticesToRemove,
+				newEdges
+			)
+		}
+
+	}
 	
-	type GraphType = SimpleGraph[V,E]
-
-	def addVertex(vertex: V2 forSome {type V2 <: V}): GraphType = new SimpleGraph(
-		vertices ++ List(vertex),
-		edges
-	)
-	
-	def addEdge(edge: E2 forSome {type E2 <: E}): GraphType = new SimpleGraph(
-		vertices ++ List(edge.head, edge.tail),
-		edges ++ List(edge)
-	)
+	object SimpleGraph
+	{
+		def empty = new SimpleGraph(
+			Set.empty[V],
+			Set.empty[E]
+		)
+	}	
 }
 
-object SimpleGraph
-{
-	def empty[V <: Vertex,E <: Edge[V]] = new SimpleGraph[V,E](
-		Set.empty[V],
-		Set.empty[E]
-	)
-}

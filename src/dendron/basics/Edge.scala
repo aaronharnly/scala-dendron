@@ -1,35 +1,29 @@
 package net.harnly.dendron
-
-trait UnorderedPair[+A]
-extends Iterable[A]
-{
-	def oneItem: A
-	def otherItem(first: A): A
-}
-
-case class PairSet(
-	one: A,
-	another: A
-) extends UnorderedPair[A]
-{
-	def elements = new Iterator[A] {
-		def hasNext
-	}
-}
+import net.harnly.dendron.datatypes.{UnorderedPair}
 
 trait Edge[+V <: Vertex]
 extends Iterable[V]
 {
 	// abstract
 	type EdgeType <: Edge[V]
+	def vertices: UnorderedPair[V]
+	
 	
 	// supplied
-	def isLoop = (head == tail)
+	def elements = vertices.elements
+	def oneVertex: V = vertices.oneItem
+	def otherVertex(first: V2 forSome {type V2 <: V}): V = vertices.otherItem(first)
+	def contains(vertex: V2 forSome {type V2 <: V}) = vertices.elements.contains(vertex)
+
+	def isLoop = {
+		val oneEnd = vertices.oneItem
+		(oneEnd == vertices.otherItem(oneEnd))
+	}
+	def isProper = ! isLoop
 }
 
 trait DirectedEdge[+V <: Vertex]
 extends Edge[V]
-with Product2[V,V]
 {
 	// abstract
 	def head: V
@@ -40,14 +34,11 @@ with Product2[V,V]
 	// supplied
 	
 	// product
-	def _1: V = tail
-	def _2: V = head
 }
 
 trait WeightedEdge[V <: Vertex]
 extends Edge[V]
 {
 	def weight: Double
-	def invert: WeightedEdgeType
 }
 
