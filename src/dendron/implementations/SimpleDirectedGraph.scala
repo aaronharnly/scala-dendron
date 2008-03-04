@@ -44,3 +44,11 @@ with DirectedGraph[V,E]
 	}
 	
 }
+
+object SimpleDirectedGraph
+{
+	def empty[V,E <: DirectedEdge[V]] = new SimpleDirectedGraph(
+		Set.empty[V],
+		Set.empty[E]
+	)
+}	
