@@ -1,7 +1,7 @@
 package net.harnly.dendron
 import net.harnly.dendron.datatypes.{UnorderedPair}
 
-trait Edge[+V <: Vertex]
+trait Edge[+V]
 extends Iterable[V]
 {
 	// abstract
@@ -22,7 +22,7 @@ extends Iterable[V]
 	def isProper = ! isLoop
 }
 
-trait DirectedEdge[+V <: Vertex]
+trait DirectedEdge[+V]
 extends Edge[V]
 {
 	// abstract
@@ -36,7 +36,7 @@ extends Edge[V]
 	// product
 }
 
-trait WeightedEdge[V <: Vertex]
+trait WeightedEdge[+V]
 extends Edge[V]
 {
 	def weight: Double

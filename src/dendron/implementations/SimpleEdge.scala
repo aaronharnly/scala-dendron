@@ -1,7 +1,7 @@
 package net.harnly.dendron
 import net.harnly.dendron.datatypes.{UnorderedPair,PairSet}
 
-case class SimpleEdge[V <: Vertex](
+case class SimpleEdge[V](
 	vertices: UnorderedPair[V]
 )
 extends Edge[V]
@@ -12,7 +12,7 @@ extends Edge[V]
 	type EdgeType = SimpleEdge[V]
 }
 
-case class SimpleDirectedEdge[V <: Vertex](
+case class SimpleDirectedEdge[V](
 	tail: V,
 	head: V
 )
@@ -22,7 +22,7 @@ with DirectedEdge[V]
 	def invert = new SimpleDirectedEdge(head, tail)
 }
 
-case class SimpleWeightedEdge[V <: Vertex](
+case class SimpleWeightedEdge[V](
 	override val vertices: UnorderedPair[V],
 	weight: Double
 )
@@ -35,7 +35,7 @@ with WeightedEdge[V]
 	)	
 }
 
-case class SimpleWeightedDirectedEdge[V <: Vertex](
+case class SimpleWeightedDirectedEdge[V](
 	override val tail: V,
 	override val head: V,
 	weight: Double
