@@ -7,6 +7,7 @@ trait Graph[V, E <: Edge[V]]
 	def edges: Set[E]
 
 	// information
+	def self: Graph[V,E] = this
 
 	// mutators	
 	def addVertex(vertex: V): Graph[V,E]
@@ -35,24 +36,24 @@ trait Graph[V, E <: Edge[V]]
 	}
 
 	// O(E)
-	def neighbors(vertex: V): Set[V] = 
+	def neighborsOf(vertex: V): Set[V] = 
 		edgesOf(vertex).map(_.otherVertex(vertex))
 
 	// mutators
 	def addVertices(vertices: V*) =
-	vertices.foldLeft(this)( _.addVertex(_))
+	vertices.foldLeft(self)( _.addVertex(_))
 
 	def removeVertices(vertices: V*) =
-	vertices.foldLeft(this)( _.removeVertex(_))
+	vertices.foldLeft(self)( _.removeVertex(_))
 
 	def addEdges(edges: E*) =
-	edges.foldLeft(this)( _.addEdge(_))
+	edges.foldLeft(self)( _.addEdge(_))
 
 	def removeEdges(edges: E*) =
-	edges.foldLeft(this)( _.removeEdge(_))
+	edges.foldLeft(self)( _.removeEdge(_))
 
 	def removeEdge(vertex1: V, vertex2: V): Graph[V,E] = 
-	edgesOf(vertex1, vertex2).foldLeft(this)( _.removeEdge(_))
+	edgesOf(vertex1, vertex2).foldLeft(self)( _.removeEdge(_))
 
 	def +(vertex: V) = addVertex(vertex)
 	def +(edge: E) = addEdge(edge)

@@ -7,6 +7,12 @@ class SimpleDirectedGraph[V, E <: DirectedEdge[V]](
 extends SimpleGraph(vertices, edges)
 with DirectedGraph[V,E]
 {
+	override def self: SimpleDirectedGraph[V,E] = this
+	def this(vertexList: Seq[V], edgeList: Seq[E]) = this(
+		collection.immutable.Set(vertexList : _*) ,
+		collection.immutable.Set(edgeList : _*) 
+	)
+
 	// mutators
 	override def addVertex(vertex: V): SimpleDirectedGraph[V,E] = new SimpleDirectedGraph(
 		vertices + vertex,
@@ -42,6 +48,9 @@ with DirectedGraph[V,E]
 			newEdges
 		)
 	}
+
+	override def addEdges(edges: E*): SimpleDirectedGraph[V,E] = 
+	edges.foldLeft(self)( _.addEdge(_))
 	
 }
 

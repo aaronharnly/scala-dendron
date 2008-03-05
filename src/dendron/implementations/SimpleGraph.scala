@@ -6,6 +6,8 @@ case class SimpleGraph[V, E <: Edge[V]](
 )
 extends Graph[V,E]
 {
+	override def self: SimpleGraph[V,E] = this
+	
 	def this(vertexList: Seq[V], edgeList: Seq[E]) = this(
 		collection.immutable.Set(vertexList : _*) ,
 		collection.immutable.Set(edgeList : _*) 

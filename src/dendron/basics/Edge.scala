@@ -5,7 +5,6 @@ trait Edge[+V]
 extends Iterable[V]
 {
 	// abstract
-	type EdgeType <: Edge[V]
 	def vertices: UnorderedPair[V]
 	
 	
@@ -20,25 +19,5 @@ extends Iterable[V]
 		(oneEnd == vertices.otherItem(oneEnd))
 	}
 	def isProper = ! isLoop
-}
-
-trait DirectedEdge[+V]
-extends Edge[V]
-{
-	// abstract
-	def head: V
-	def tail: V
-	
-	def invert: EdgeType
-
-	// supplied
-	
-	// product
-}
-
-trait WeightedEdge[+V]
-extends Edge[V]
-{
-	def weight: Double
 }
 
