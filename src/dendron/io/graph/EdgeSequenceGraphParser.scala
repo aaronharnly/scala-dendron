@@ -1,6 +1,6 @@
 package net.harnly.dendron.io
 
-class EdgeSequenceGraphParser[
+case class EdgeSequenceGraphParser[
 	Tgraph,
 	Tedge,
 	Tvertex,

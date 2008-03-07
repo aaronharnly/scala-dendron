@@ -1,6 +1,6 @@
 package net.harnly.dendron.io
 
-class VertexPairParser[Tvertex,V,E <: Edge[V]](
+case class VertexPairEdgeParser[Tvertex,V,E <: Edge[V]](
 	edgeFactory: (V,V) => E,
 	val defaultVertexParser: VertexParser[Tvertex,V],
 	val vertexParsers: VertexParser[Tvertex,V]*
