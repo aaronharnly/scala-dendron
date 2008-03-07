@@ -8,7 +8,7 @@ case class EdgeSequenceGraphParser[
 	E <: DirectedEdge[V],
 	G <: DirectedGraph[V,E]
 ](
-	graphFactory: (Set[V],Set[E]) => G,
+	graphFactory: ((Set[V],Set[E])) => G,
 	edgeExtractor: Tgraph => Iterable[Tedge],
 	val defaultEdgeParser: EdgeParser[Tedge,Tvertex,V,E],
 	val edgeParsers: EdgeParser[Tedge,Tvertex,V,E]*

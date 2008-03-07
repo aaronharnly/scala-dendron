@@ -1,13 +1,13 @@
 package net.harnly.dendron.io
 
 case class VertexPairEdgeParser[Tvertex,V,E <: Edge[V]](
-	edgeFactory: (V,V) => E,
+	edgeFactory: ((V,V)) => E,
 	val defaultVertexParser: VertexParser[Tvertex,V],
 	val vertexParsers: VertexParser[Tvertex,V]*
 )
-extends EdgeParser[(Tvertex,Tvertex),Tvertex,V,E]
+extends EdgeParser[((Tvertex,Tvertex)),Tvertex,V,E]
 {
-	def canParse(input: (Tvertex,Tvertex)) = allVertexParsers.exists( p =>
+	def canParse(input: ((Tvertex,Tvertex))) = allVertexParsers.exists( p =>
 		p.canParse(input._1)
 	) && allVertexParsers.exists( p =>
 		p.canParse(input._2)
