@@ -26,3 +26,24 @@ extends EdgeParser[((Tvertex,Tvertex)),Tvertex,V,E]
 		}
 	}
 }
+
+case class VertexPairSplitterEdgeParser[Tedge,Tvertex,V,E <: Edge[V]](
+	edgeFactory: ((V,V)) => E,
+	edgeSplitter: Tedge => ((Tvertex,Tvertex)),
+	val defaultVertexParser: VertexParser[Tvertex,V],
+	val vertexParsers: VertexParser[Tvertex,V]*	
+)
+extends EdgeParser[Tedge,Tvertex,V,E]
+{
+	val pairParser = VertexPairEdgeParser(
+		edgeFactory,
+		defaultVertexParser,
+		vertexParsers : _*
+	)
+	def canParse(input: Tedge) = pairParser.canParse(
+		edgeSplitter(input)
+	)
+	def parse(input: V2 forSome {type V2 <: Tedge}): Option[E] = pairParser.parse(
+		edgeSplitter(input)
+	)
+}
