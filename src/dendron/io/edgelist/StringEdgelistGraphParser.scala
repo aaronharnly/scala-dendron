@@ -5,7 +5,7 @@ class StringEdgelistGraphParser[
 	E <: DirectedEdge[V],
 	G <: DirectedGraph[V,E]
 ](
-	graphFactory: ((Set[V],Set[E])) => G,
+	graphFactory: (Set[V],Set[E]) => G,
 	edgeFactory: ((V,V)) => E,
 	vertexFactory: String => V
 )
@@ -34,8 +34,8 @@ extends StringEdgelistGraphParser[
 	DirectedGraph[String,DirectedEdge[String]]
 ](
 	{
-		sets: (Set[String], Set[DirectedEdge[String]]) =>
-			new SimpleDirectedGraph(sets._1, sets._2)
+		(v: Set[String], e: Set[DirectedEdge[String]]) =>
+			new SimpleDirectedGraph(v, e)
 	},
 	{
 		vpair: (String,String) =>
