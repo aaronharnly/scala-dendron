@@ -9,12 +9,12 @@ class StringEdgelistGraphParser[
 	edgeFactory: ((V,V)) => E,
 	vertexFactory: String => V
 )
-extends EdgeSequenceGraphParser[
-	Seq[String],((String,String)),String,
+extends EdgeIterableGraphParser[
+	Iterable[String],((String,String)),String,
 	V,E,G
 ](
 	graphFactory,
-	{ lines: Seq[String] => lines.map{ line =>
+	{ lines: Iterable[String] => lines.map{ line =>
 		val pieces = line.trim.split("\t")
 		((pieces(0),pieces(1)))
 	}},
@@ -41,7 +41,5 @@ extends StringEdgelistGraphParser[
 		vpair: (String,String) =>
 			SimpleDirectedEdge(vpair._1, vpair._2)
 	},
-	{
-		v: String => v
-	}
+	identity[String]
 )
