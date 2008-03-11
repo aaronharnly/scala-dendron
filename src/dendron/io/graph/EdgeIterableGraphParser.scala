@@ -15,7 +15,7 @@ case class EdgeIterableGraphParser[
 )
 extends GraphParser[Tgraph,Tedge,Tvertex,V,E,G]
 {
-	def parse(input: T2 forSome {type T2 <: Tgraph}): Option[G] = {
+	def apply(input: Tgraph): Option[G] = {
 		val edges = edgeExtractor(input).flatMap( e =>
 			parserForEdge(e).parse(e)
 		)

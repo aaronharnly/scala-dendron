@@ -3,6 +3,3 @@ import net.harnly.aaron.io.{Formatter}
 
 trait VertexFormatter[V,A] 
 extends Formatter[V,A]
-{
-	def canFormat(input: V): Boolean
-}

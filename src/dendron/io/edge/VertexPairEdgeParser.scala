@@ -7,13 +7,13 @@ case class VertexPairEdgeParser[Tvertex,V,E <: Edge[V]](
 )
 extends EdgeParser[((Tvertex,Tvertex)),Tvertex,V,E]
 {
-	def canParse(input: ((Tvertex,Tvertex))) = allVertexParsers.exists( p =>
+	override def isDefinedAt(input: ((Tvertex,Tvertex))) = allVertexParsers.exists( p =>
 		p.canParse(input._1)
 	) && allVertexParsers.exists( p =>
 		p.canParse(input._2)
 	)
 	
-	def parse(input: V2 forSome {type V2 <: (Tvertex,Tvertex)}): Option[E] = {
+	def apply(input: (Tvertex,Tvertex)): Option[E] = {
 		val vertex1 = parserForVertex(input._1).parse(input._1)
 		val vertex2 = parserForVertex(input._2).parse(input._2)
 		
@@ -40,10 +40,10 @@ extends EdgeParser[Tedge,Tvertex,V,E]
 		defaultVertexParser,
 		vertexParsers : _*
 	)
-	def canParse(input: Tedge) = pairParser.canParse(
+	override def isDefinedAt(input: Tedge) = pairParser.canParse(
 		edgeSplitter(input)
 	)
-	def parse(input: V2 forSome {type V2 <: Tedge}): Option[E] = pairParser.parse(
+	def apply(input: Tedge): Option[E] = pairParser.parse(
 		edgeSplitter(input)
 	)
 }
