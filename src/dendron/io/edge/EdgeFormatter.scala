@@ -1,8 +1,13 @@
 package net.harnly.dendron.io
 import net.harnly.aaron.io.{Formatter}
 
-trait EdgeFormatter[V,E <: Edge[V],A] 
-extends Formatter[E,A]
+trait EdgeFormatter[V,E <: Edge[V],Tvertex,Tedge] 
+extends Formatter[E,Tedge]
 {
-	def canFormat(input: E): Boolean
+	def defaultVertexFormatter: VertexFormatter[V,Tvertex]
+	def vertexFormatters: Iterable[VertexFormatter[V,Tvertex]]
+	def allVertexFormatters = vertexFormatters ++ List(defaultVertexFormatter)
+	
+	def formatterForVertex(input: V): VertexFormatter[V,Tvertex] = 
+		vertexFormatters.find( _.canFormat(input)).getOrElse(defaultVertexFormatter)
 }

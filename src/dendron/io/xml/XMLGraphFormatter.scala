@@ -7,12 +7,12 @@ class XMLGraphFormatter[
 	G <: DirectedGraph[V,E]
 ](
 	graphFormatter: G => Node,
-	edgeFormatter: EdgeFormatter[V,E,Node],
-	vertexFormatter: VertexFormatter[V,Node]
+	val defaultEdgeFormatter: EdgeFormatter[V,E,Node,Node],
+	val edgeFormatters: EdgeFormatter[V,E,Node,Node]*
 )
 extends GraphFormatter[
 	V,E,G,
-	Node
+	Node, Node, Node
 ]
 {
 	def apply(graph: G): Node = 
@@ -23,14 +23,14 @@ extends GraphFormatter[
 	<vertices>
 		{
 			graph.verticesNotInEdges.map( v =>
-				vertexFormatter.format(v)
+				defaultEdgeFormatter.formatterForVertex(v).format(v)
 			)
 		}
 	</vertices>
 	<edges>
 		{
 			graph.edges.map( e =>
-				edgeFormatter.format(e)
+				formatterForEdge(e).format(e)
 			)
 		}
 	</edges>
