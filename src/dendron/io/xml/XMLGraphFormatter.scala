@@ -3,7 +3,7 @@ import scala.xml.{Node}
 
 class XMLGraphFormatter[
 	V, 
-	E <: DirectedEdge[V],
+	E <: Edge[V],
 	G <: DirectedGraph[V,E]
 ](
 	graphFormatter: G => Node,
@@ -20,13 +20,13 @@ extends GraphFormatter[
 	<graphInfo>
 		{ graphFormatter(graph) }
 	</graphInfo>
-	<nodes>
+	<vertices>
 		{
-			graph.vertices.map( v =>
+			graph.verticesNotInEdges.map( v =>
 				vertexFormatter.format(v)
 			)
 		}
-	</nodes>
+	</vertices>
 	<edges>
 		{
 			graph.edges.map( e =>

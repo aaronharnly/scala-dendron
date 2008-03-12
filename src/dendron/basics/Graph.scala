@@ -34,6 +34,14 @@ trait Graph[V, E <: Edge[V]]
 			)
 		)
 	}
+	
+	def verticesInEdges: Set[V] = 
+		edges.foldLeft(Set.empty[V])( (set, edge) =>
+			set ++ edge
+		)
+	
+	def verticesNotInEdges: Set[V] = 
+		vertices -- verticesInEdges
 
 	// O(E)
 	def neighborsOf(vertex: V): Set[V] = 

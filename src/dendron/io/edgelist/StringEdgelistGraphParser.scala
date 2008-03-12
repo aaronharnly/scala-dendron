@@ -6,7 +6,7 @@ class StringEdgelistGraphParser[
 	G <: DirectedGraph[V,E]
 ](
 	graphFactory: (Set[V],Set[E]) => G,
-	edgeFactory: ((V,V)) => E,
+	edgeFactory: ((V,V)) => Option[E],
 	vertexFactory: String => V
 )
 extends EdgeIterableGraphParser[
@@ -14,9 +14,14 @@ extends EdgeIterableGraphParser[
 	V,E,G
 ](
 	graphFactory,
-	{ lines: Iterable[String] => lines.map{ line =>
+	{ lines: Iterable[String] => lines.flatMap{ line =>
 		val pieces = line.trim.split("\t")
-		((pieces(0),pieces(1)))
+		if (pieces.length == 2)
+			Some(
+				((pieces(0),pieces(1)))
+			)
+		else
+			None
 	}},
 	new VertexPairEdgeParser[String,V,E](
 		edgeFactory,
@@ -39,7 +44,7 @@ extends StringEdgelistGraphParser[
 	},
 	{
 		vpair: (String,String) =>
-			SimpleDirectedEdge(vpair._1, vpair._2)
+			Some(SimpleDirectedEdge(vpair._1, vpair._2))
 	},
 	identity[String]
 )
