@@ -34,7 +34,7 @@
 <!-- ************* Build all Scala source files. *************  -->
  <target name="build" depends="init">
     <mkdir dir="${build.dir}"/>
-    <scalac srcdir="${src.dir}"
+    <fsc srcdir="${src.dir}"
             destdir="${build.dir}"
             classpathref="build.classpath"
             force="changed"
@@ -43,7 +43,7 @@
             unchecked="yes"
             deprecation="yes">
       <include name="**/*.scala"/>
-    </scalac>
+    </fsc>
   </target>
 
 <!-- ************* Build documentation. ************* -->
