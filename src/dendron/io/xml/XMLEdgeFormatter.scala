@@ -1,39 +1,86 @@
 package net.harnly.dendron.io.xml
-import scala.xml.{Node}
+import scala.xml.{Elem,Node,MetaData,Null,TopScope}
+import net.harnly.aaron.utilities.XMLUtilities
+import net.harnly.aaron.extensions.Function1RightAssociativeExtensions._
 
-class XMLUndirectedEdgeFormatter[V, E <: Edge[V]](
+abstract class XMLEdgeFormatter[V, E <: Edge[V]](
+	val metadataFactory: (E) => Map[String,String],
 	val defaultVertexFormatter: VertexFormatter[V,Node],
 	val vertexFormatters: VertexFormatter[V,Node]*
 )
 extends EdgeFormatter[V,E,Node,Node]
 {
+	def firstVertexLabel: String
+	def secondVertexLabel: String
+	def firstVertexExtractor(edge: E): V
+	def secondVertexExtractor(edge: E, first: V): V
+	
+	def metadataForEdge(
+		metadataFactory: (E) => Map[String,String],
+		edge: E
+	): MetaData = edge ->: metadataFactory ->: 
+		{ m: Map[String,String] => m + ("kind" -> edge.getClass.getSimpleName)} ->: 
+		XMLUtilities.mapToMetadata _
+	
+	def vertex(v: V, label: String): Node = new Elem(
+		null,
+		label,
+		Null,
+		TopScope,
+		formatterForVertex(v).format(v)
+	)
+	
 	def apply(edge: E): Node = {
-		val oneVertex = edge.oneVertex
-		val otherVertex = edge.otherVertex(oneVertex)
-		<edge kind="{edge.getClass.getName}">
-			<oneVertex>
-				{formatterForVertex(oneVertex).format(oneVertex)}
-			</oneVertex>
-			<otherVertex>
-				{formatterForVertex(otherVertex).format(otherVertex)}
-			</otherVertex>
-		</edge>
+		val first = firstVertexExtractor(edge)
+		val second = secondVertexExtractor(edge, first)
+
+		new Elem(
+			null,
+			"edge",
+			metadataForEdge(metadataFactory, edge),
+			TopScope,
+			vertex(first, firstVertexLabel), 
+			vertex(second, secondVertexLabel)
+		)
 	}
 }
 
-class XMLDirectedEdgeFormatter[V, E <: DirectedEdge[V]](
-	val defaultVertexFormatter: VertexFormatter[V,Node],
-	val vertexFormatters: VertexFormatter[V,Node]*
-)
-extends EdgeFormatter[V,E,Node,Node]
+trait DirectedEdgeFormatter[V, E <: DirectedEdge[V]]
 {
-	def apply(edge: E): Node = 
-	<edge kind="{edge.getClass.getName}">
-		<tail>
-			{formatterForVertex(edge.tail).format(edge.tail)}
-		</tail>
-		<head>
-			{formatterForVertex(edge.head).format(edge.head)}
-		</head>
-	</edge>
+	val firstVertexLabel = "tail"
+	val secondVertexLabel = "head"
+	
+	def firstVertexExtractor(edge: E) = edge.tail
+	def secondVertexExtractor(edge: E, first: V) = edge.head	
 }
+
+trait UndirectedEdgeFormatter[V, E <: Edge[V]]
+{
+	val firstVertexLabel = "oneVertex"
+	val secondVertexLabel = "otherVertex"
+	
+	def firstVertexExtractor(edge: E) = edge.oneVertex
+	def secondVertexExtractor(edge: E, first: V) = edge.otherVertex(first)
+}
+
+class XMLDirectedEdgeFormatter[V, E <: DirectedEdge[V]](
+	metadataFactory: (E) => Map[String,String],
+	defaultVertexFormatter: VertexFormatter[V,Node],
+	vertexFormatters: VertexFormatter[V,Node]*
+)
+extends XMLEdgeFormatter[V,E](
+	metadataFactory,
+	defaultVertexFormatter,
+	vertexFormatters : _*
+) with DirectedEdgeFormatter[V,E]
+
+class XMLUndirectedEdgeFormatter[V, E <: Edge[V]](
+	metadataFactory: (E) => Map[String,String],
+	defaultVertexFormatter: VertexFormatter[V,Node],
+	vertexFormatters: VertexFormatter[V,Node]*
+)
+extends XMLEdgeFormatter[V,E](
+	metadataFactory,
+	defaultVertexFormatter,
+	vertexFormatters : _*
+) with UndirectedEdgeFormatter[V,E]

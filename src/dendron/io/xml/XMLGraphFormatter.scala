@@ -7,6 +7,7 @@ class XMLGraphFormatter[
 	G <: DirectedGraph[V,E]
 ](
 	graphFormatter: G => Node,
+	val defaultVertexFormatter: VertexFormatter[V,Node],
 	val defaultEdgeFormatter: EdgeFormatter[V,E,Node,Node],
 	val edgeFormatters: EdgeFormatter[V,E,Node,Node]*
 )
@@ -16,20 +17,20 @@ extends GraphFormatter[
 ]
 {
 	def apply(graph: G): Node = 
-<graph kind="{ graph.getClass.getName }">
+<graph kind={ graph.getClass.getName }>
 	<graphInfo>
 		{ graphFormatter(graph) }
 	</graphInfo>
 	<vertices>
 		{
-			graph.verticesNotInEdges.map( v =>
-				defaultEdgeFormatter.formatterForVertex(v).format(v)
+			graph.vertices.toList.map( v =>
+				defaultVertexFormatter.format(v)
 			)
 		}
 	</vertices>
 	<edges>
 		{
-			graph.edges.map( e =>
+			graph.edges.toList.map( e =>
 				formatterForEdge(e).format(e)
 			)
 		}
