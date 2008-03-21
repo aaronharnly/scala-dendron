@@ -1,12 +1,13 @@
 package net.harnly.dendron.io
 import net.harnly.aaron.io.{Parser,Formatter}
+import net.harnly.aaron.extensions.Function1RightAssociativeExtensions._
 
 // useful for storing edges compactly
 trait VertexIDFormatter[-V,+Tid]
 extends Formatter[V,Tid]
 
 trait VertexIDParser[-Tvertex,+Tid]
-extends Function1[Tvertex,Tid]
+extends Parser[Tvertex,Option[Tid]]
 
 trait VertexIDCache[V,Tid]
 {
@@ -44,8 +45,12 @@ extends VertexFormatter[V,Tvertex]
 	def vertexIDFormatter: VertexIDFormatter[V,Tid]
 }
 
-trait IDOnlyVertexParser[V,Tid,Tvertex]
+trait IDOnlyVertexParser[Tvertex,Tid,V]
 extends VertexParser[Tvertex,V]
 {
-	def vertexIDCache
+	def vertexIDCache: VertexIDCache[V,Tid]
+	def vertexIDParser: VertexIDParser[Tvertex,Tid]
+	def apply(input: Tvertex) = vertexIDParser.parse(input).flatMap( id =>
+		vertexIDCache.byID.get(id)
+	)	
 }
