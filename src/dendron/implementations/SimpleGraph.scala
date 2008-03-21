@@ -19,13 +19,11 @@ extends Graph[V,E]
 		edges
 	)
 
-	def addEdge(edge: E): SimpleGraph[V,E] = {
-		val oneVertex = edge.oneVertex
+	def addEdge(edge: E): SimpleGraph[V,E] = 
 		new SimpleGraph(
-			vertices ++ List(oneVertex, edge.otherVertex(oneVertex)),
+			vertices ++ edge.vertices,
 			edges + edge
 		)
-	}
 
 	def removeVertex(vertex: V): SimpleGraph[V,E] = {
 		val touchingEdges = edgesOf(vertex)

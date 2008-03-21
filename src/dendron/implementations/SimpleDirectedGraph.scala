@@ -19,21 +19,17 @@ with DirectedGraph[V,E]
 		edges
 	)
 
-	override def addEdge(edge: E): SimpleDirectedGraph[V,E] = {
-		val oneVertex = edge.oneVertex
+	override def addEdge(edge: E): SimpleDirectedGraph[V,E] = 
 		new SimpleDirectedGraph(
-			vertices ++ List(oneVertex, edge.otherVertex(oneVertex)),
+			vertices ++ edge.vertices,
 			edges + edge
 		)
-	}
 
-	override def removeVertex(vertex: V): SimpleDirectedGraph[V,E] = {
-		val touchingEdges = edgesOf(vertex)
+	override def removeVertex(vertex: V): SimpleDirectedGraph[V,E] = 
 		new SimpleDirectedGraph(
 			vertices - vertex,
-			edges -- touchingEdges
+			edges -- edgesOf(vertex)
 		)
-	}
 
 	override def removeEdge(edge: E): SimpleDirectedGraph[V,E] = {
 		// remove the edge, and also the vertices if this is the only edge with the vertex

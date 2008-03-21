@@ -21,11 +21,9 @@ extends GraphParser[Tgraph,Tedge,Tvertex,V,E,G]
 		)
 		val edgeSet = Set.empty[E] ++ edges
 		
-		val vertices = edges.foldLeft(Set.empty[V])( (set,edge) => {
-			val oneVertex = edge.oneVertex
-			val otherVertex = edge.otherVertex(oneVertex)
-			set + oneVertex + otherVertex
-		})
+		val vertices = edges.foldLeft(Set.empty[V])( (set,edge) => 
+			set ++ edge.vertices
+		)
 		Some(
 			graphFactory(vertices, edgeSet)
 		)

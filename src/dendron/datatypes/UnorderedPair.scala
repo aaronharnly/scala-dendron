@@ -1,10 +1,19 @@
 package net.harnly.dendron.datatypes
 
 trait UnorderedPair[+A]
-extends Iterable[A]
+extends Seq[A]
 {
 	def oneItem: A
 	def otherItem(first: A2 forSome {type A2 <: A}): A
+	def length = 2
+
+	def apply(n: Int) = {
+		val first = oneItem
+		if (n == 0)
+			oneItem
+		else
+			otherItem(oneItem)
+	}
 }
 
 case class PairSet[+A](
@@ -34,5 +43,6 @@ case class PairSet[+A](
 
 	def otherItem(first: A2 forSome {type A2 <: A}): A = 
 	if (first == one) another else one
+	
 }
 

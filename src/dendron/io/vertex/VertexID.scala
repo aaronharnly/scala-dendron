@@ -44,3 +44,8 @@ extends VertexFormatter[V,Tvertex]
 	def vertexIDFormatter: VertexIDFormatter[V,Tid]
 }
 
+trait IDOnlyVertexParser[V,Tid,Tvertex]
+extends VertexParser[Tvertex,V]
+{
+	def vertexIDCache
+}
