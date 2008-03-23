@@ -11,6 +11,7 @@
     <property name="docs.dir" value="${base.dir}/docs"/>
     <property name="compile.debug" value="true"/>
     <property name="utilities.dir" value="${env.HOME}/git/public/scala-utilities/build"/>
+    <property name="jars.dir" value="${env.HOME}/external-software/crossplatform/stow/jars"/>
 
     <!-- ************* Init the scala task. *************  -->
   <target name="init">
@@ -22,6 +23,12 @@
       <pathelement location="${scala-library.jar}"/>
       <pathelement location="${build.dir}"/>
       <pathelement location="${utilities.dir}"/>
+    </path>
+    <path id="test.classpath">
+	  <pathelement path="${build.classpath}" />
+      <pathelement location="${jars.dir}/junit-4.4.jar"/>
+      <pathelement location="${jars.dir}/ScalaCheck-1.2.jar"/>
+      <pathelement location="${jars.dir}/specs-1.2.5.jar"/>
     </path>
     <taskdef resource="scala/tools/ant/antlib.xml">
       <classpath>

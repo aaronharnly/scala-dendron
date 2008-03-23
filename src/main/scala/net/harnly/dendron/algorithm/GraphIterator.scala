@@ -1,4 +1,4 @@
-package net.harnly.dendron.algorithms
+package net.harnly.dendron.algorithm
 import scala.collection.mutable.{Set => MSet, HashSet}
 import net.harnly.dendron.datatypes._
 

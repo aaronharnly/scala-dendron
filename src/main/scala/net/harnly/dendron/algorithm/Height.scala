@@ -1,4 +1,4 @@
-package net.harnly.dendron.algorithms
+package net.harnly.dendron.algorithm
 import scala.collection.mutable.{Map => MMap, HashMap => MHashMap, Set => MSet, HashSet => MHashSet}
 import scala.collection.immutable.{Map => IMap, HashMap => IHashMap}
 

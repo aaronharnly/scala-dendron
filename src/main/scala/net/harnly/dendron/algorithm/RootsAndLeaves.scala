@@ -1,4 +1,4 @@
-package net.harnly.dendron.algorithms
+package net.harnly.dendron.algorithm
 
 object FindRoots
 {
