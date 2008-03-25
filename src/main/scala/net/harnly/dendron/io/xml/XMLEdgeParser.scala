@@ -7,13 +7,25 @@ import net.harnly.aaron.utilities.XMLUtilities._
 class XMLEdgeParser[V, E <: Edge[V]](
 	firstVertexLabel: String,
 	secondVertexLabel: String,
-	edgeFactory: ((V,V,Map[String,String])) => Option[E],
-	defaultVertexParser: VertexParser[Node,V],
-	vertexParsers: VertexParser[Node,V]*
+	override val edgeFactory: ((V,V,Map[String,String])) => Option[E],
+	override val defaultVertexParser: VertexParser[Node,V],
+	override val vertexParsers: VertexParser[Node,V]*
 )
-extends VertexPairAndContextEdgeParser[Node,Map[String,String],V,E](
+extends VertexPairAndContextSplitterEdgeParser[Node,Node,Map[String,String],V,E](
 	edgeFactory,
-	{ input: Node =>
+	EdgeNodeSplitter(firstVertexLabel, secondVertexLabel),
+	defaultVertexParser,
+	vertexParsers : _*
+)
+
+case class EdgeNodeSplitter(
+	firstVertexLabel: String,
+	secondVertexLabel: String
+)
+extends Function1[Node, Option[((Node,Node,Map[String,String]))]]
+{
+	def apply(input: Node): Option[((Node,Node,Map[String,String]))] =
+	{
 		val metadataMap = metadataToMap(input.attributes)
 		val oneVertex = seq2Option(input \ firstVertexLabel)
 		val otherVertex = seq2Option(input \ secondVertexLabel)
@@ -22,14 +34,12 @@ extends VertexPairAndContextEdgeParser[Node,Map[String,String],V,E](
 			case Some(v1) => otherVertex match {
 				case None => None
 				case Some(v2) => Some(
-					((v1, v2))
+					((v1, v2, metadataMap))
 				)
 			}
 		}
-	},
-	defaultVertexParser,
-	vertexParsers : _*
-)
+	}	
+}
 
 class XMLUndirectedEdgeParser[V, E <: DirectedEdge[V]](
 	edgeFactory: ((V,V,Map[String,String])) => Option[E],
