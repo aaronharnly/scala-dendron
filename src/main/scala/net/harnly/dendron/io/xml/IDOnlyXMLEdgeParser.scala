@@ -17,3 +17,28 @@ extends IDOnlyVertexPairAndContextSplitterEdgeParser[Node,Node,String,Map[String
 	defaultVertexParser,
 	vertexParsers: _*
 )
+
+class IDOnlyXMLDirectedEdgeParser[V, E <: Edge[V]](
+	override val edgeFactory: ((V,V,Map[String,String])) => Option[E],
+	override val defaultVertexParser: IDOnlyVertexParser[Node,String,V],
+	override val vertexParsers: IDOnlyVertexParser[Node,String,V]*
+)
+extends IDOnlyXMLEdgeParser[V,E](
+	"tail","head",
+	edgeFactory,
+	defaultVertexParser,
+	vertexParsers: _*
+)
+
+class IDOnlyXMLUndirectedEdgeParser[V, E <: Edge[V]](
+	override val edgeFactory: ((V,V,Map[String,String])) => Option[E],
+	override val defaultVertexParser: IDOnlyVertexParser[Node,String,V],
+	override val vertexParsers: IDOnlyVertexParser[Node,String,V]*
+)
+extends IDOnlyXMLEdgeParser[V,E](
+	"oneVertex","otherVertex",
+	edgeFactory,
+	defaultVertexParser,
+	vertexParsers: _*
+)
+
