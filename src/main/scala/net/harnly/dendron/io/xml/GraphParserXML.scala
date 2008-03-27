@@ -17,10 +17,10 @@ extends net.harnly.dendron.io.GraphParserWithMetadata[
 	def freshCache: VertexCache[String,V] = VertexCache.empty[String,V]
 	def parseMetadata(input: MetaData) = Some(metadataToMap(input))
 
-	def splitGraph(input: Node): Option[(Seq[Node], Seq[Node], Map[String,String])] = for(
+	def splitGraph(input: Node): Option[(Seq[Node], Seq[Node], MetaData)] = for(
 		vertexContainer <- seq2Option( input \ "vertices" );
 		edgeContainer <- seq2Option( input \ "edges" )
 	) yield
-		(( vertexContainer.child, edgeContainer.child, input.attribute ))
+		(( vertexContainer.child, edgeContainer.child, input.attributes ))
 }
 

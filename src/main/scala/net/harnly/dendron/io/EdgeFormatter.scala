@@ -33,7 +33,7 @@ extends EdgeFormatter[V,E,Tvertex,Tedge]
 	def extractMetadata(input: E): Medge
 	def formatMetadata(data: Medge): Tmetadata
 	// -- supplied --
-	def extractVertices(edge: E): (V,V) = edge.orderedVertices
+
 	def apply(edge: E) = {
 		val formattedVertices = edge ->: extractVertices _ ->: formatVertices _
 		val formattedMetadata = edge ->: extractMetadata _ ->: formatMetadata _
