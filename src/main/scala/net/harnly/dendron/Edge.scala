@@ -1,7 +1,7 @@
 package net.harnly.dendron
 import net.harnly.dendron.datatypes.{UnorderedPair,PairSet}
 
-trait Edge[+V]
+trait Edge[V]
 extends Iterable[V]
 {
 	// -- abstract --
@@ -14,7 +14,7 @@ extends Iterable[V]
 	// Vertex access
 	def vertices: Seq[V] = unorderedVertices
 	def oneVertex: V = unorderedVertices.oneItem
-	def otherVertex(first: V2 forSome {type V2 <: V}): V = unorderedVertices.otherItem(first)
+	def otherVertex(first: V): V = unorderedVertices.otherItem(first)
 	def orderedVertices: (V,V) = {
 		val v1 = unorderedVertices.oneItem
 		val v2 = unorderedVertices.otherItem(v1)
@@ -22,7 +22,7 @@ extends Iterable[V]
 	}
 	
 	// Queries
-	def contains(vertex: V2 forSome {type V2 <: V}) = vertices.elements.contains(vertex)
+	def contains(vertex: V) = vertices.elements.contains(vertex)
 	def isLoop: Boolean = orderedVertices._1 == orderedVertices._2
 	def isProper = ! isLoop
 	
@@ -30,7 +30,7 @@ extends Iterable[V]
 	override def toString: String = "(" + orderedVertices._1 + " -- " + orderedVertices._2 + ")"
 }
 
-trait DirectedEdge[+V]
+trait DirectedEdge[V]
 extends Edge[V]
 {
 	// abstract

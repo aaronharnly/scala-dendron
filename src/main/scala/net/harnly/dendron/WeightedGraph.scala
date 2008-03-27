@@ -1,6 +1,6 @@
 package net.harnly.dendron
 
-trait WeightedEdge[+V]
+trait WeightedEdge[V]
 extends Edge[V]
 {
 	def weight: Double

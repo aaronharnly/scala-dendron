@@ -1,46 +1,31 @@
 package net.harnly.dendron.io
-import net.harnly.aaron.extensions.Function1RightAssociativeExtensions._
 
 /** 
  * 
  */
-trait VertexCache[V,Ttoken]
+trait VertexCache[Ttoken,V]
 {
 	// -- abstract --
-	def newCache(token: Ttoken, vertex: V): VertexCache[V, Ttoken]
+	def +(pair: (Ttoken,V)): VertexCache[Ttoken,V]
 	def map: Map[Ttoken,V]
-	def tokenExtractor(vertex: V): Ttoken
 
 	// -- provided --
-	def getOrCache(vertex: V): (V, VertexCache[V,Ttoken]) = {
-		val token = tokenExtractor(vertex)
-		map.get( token ) match {
-			case Some(v) => ((v, this))
-			case None => ((vertex, newCache(token, vertex)))
-		}
-	}
+	def get(token: Ttoken): Option[V] = map.get(token)	
 }
 
-class DefaultVertexCache[V,Ttoken](
-	val map: Map[Ttoken,V],
-	extractor: V => Ttoken
-) extends VertexCache[V,Ttoken]
+class DefaultVertexCache[Ttoken,V](
+	val map: Map[Ttoken,V]
+) extends VertexCache[Ttoken,V]
 {
-	def newCache(token: Ttoken, vertex: V) = new DefaultVertexCache(
-		map + (token -> vertex),
-		extractor
+	def +(pair: (Ttoken,V)) = new DefaultVertexCache(
+		map + pair
 	)
-	
-	def tokenExtractor(vertex: V) = extractor(vertex)
 }
 
 object VertexCache
 {
-	def emptyWithExtractor[V,Ttoken](extractor: V => Ttoken) = 
-	new DefaultVertexCache[V,Ttoken](
-		Map.empty[Ttoken,V],
-		extractor
+	def empty[Ttoken,V] = new DefaultVertexCache[Ttoken,V](
+		Map.empty[Ttoken,V]
 	)
-
-	def emptyWithIdentity[V] = emptyWithExtractor[V,V](identity)
 }
+
