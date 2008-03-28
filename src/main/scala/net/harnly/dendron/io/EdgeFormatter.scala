@@ -45,8 +45,8 @@ extends EdgeFormatter[V,E,Tvertex,Tedge]
 	}
 }
 
-trait EdgeFormatterTokenOnly[V,E <: Edge[V],Ttoken,Tvertex,Tedge] 
+trait EdgeFormatterTokenOnly[V,E <: Edge[V],Mtoken,Ttoken,Tvertex,Tedge] 
 extends EdgeFormatter[V,E,Tvertex,Tedge]
 {
-	def vertexFormatter: VertexFormatterTokenOnly[V,Ttoken,Tvertex]
+	def vertexFormatter: VertexFormatterTokenOnly[V,Mtoken,Ttoken,Tvertex]
 }

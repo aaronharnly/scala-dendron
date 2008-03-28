@@ -3,29 +3,29 @@ package net.harnly.dendron.io
 /** 
  * 
  */
-trait VertexCache[Ttoken,V]
+trait VertexCache[Mtoken,V]
 {
 	// -- abstract --
-	def +(pair: (Ttoken,V)): VertexCache[Ttoken,V]
-	def map: Map[Ttoken,V]
+	def +(pair: (Mtoken,V)): VertexCache[Mtoken,V]
+	def map: Map[Mtoken,V]
 
 	// -- provided --
-	def get(token: Ttoken): Option[V] = map.get(token)	
+	def get(token: Mtoken): Option[V] = map.get(token)	
 }
 
-class DefaultVertexCache[Ttoken,V](
-	val map: Map[Ttoken,V]
-) extends VertexCache[Ttoken,V]
+class DefaultVertexCache[Mtoken,V](
+	val map: Map[Mtoken,V]
+) extends VertexCache[Mtoken,V]
 {
-	def +(pair: (Ttoken,V)) = new DefaultVertexCache(
+	def +(pair: (Mtoken,V)) = new DefaultVertexCache(
 		map + pair
 	)
 }
 
 object VertexCache
 {
-	def empty[Ttoken,V] = new DefaultVertexCache[Ttoken,V](
-		Map.empty[Ttoken,V]
+	def empty[Mtoken,V] = new DefaultVertexCache[Mtoken,V](
+		Map.empty[Mtoken,V]
 	)
 }
 

@@ -4,7 +4,7 @@ abstract class EdgeFormatterDot[V, E <: Edge[V]](
 	val separator: String
 )
 extends EdgeFormatterNoMetadata[V,E,String,String]
-with EdgeFormatterTokenOnly[V,E,String,String,String]
+with EdgeFormatterTokenOnly[V,E,String,String,String,String]
 {
 	def formatWithFormattedVertices(v1: String, v2: String) = v1 + separator + v2
 }

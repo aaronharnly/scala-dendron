@@ -9,7 +9,7 @@ abstract class EdgeParserXML[V,E <: Edge[V]](
 	firstVertexLabel: String,
 	secondVertexLabel: String
 )
-extends EdgeParserWithMetadata[Node,Node,String,MetaData,Map[String,String],V,E]
+extends EdgeParserWithMetadata[Node,Node,MetaData,MetaData,Map[String,String],String,V,E]
 {
 	def parseMetadata(input: MetaData): Option[Map[String,String]] = Some(metadataToMap(input))
 

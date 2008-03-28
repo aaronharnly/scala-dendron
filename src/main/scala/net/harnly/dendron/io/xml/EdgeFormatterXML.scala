@@ -8,7 +8,7 @@ abstract class EdgeFormatterXML[V, E <: Edge[V]](
 	secondVertexLabel: String
 )
 extends EdgeFormatterWithMetadata[V,E,Map[String,String],MetaData,Node,Node]
-with EdgeFormatterTokenOnly[V,E,String,Node,Node] 
+with EdgeFormatterTokenOnly[V,E,String,MetaData,Node,Node] 
 {
 	import XMLUtilities._
 	// -- supplied --

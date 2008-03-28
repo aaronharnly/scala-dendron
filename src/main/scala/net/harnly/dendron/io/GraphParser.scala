@@ -1,23 +1,26 @@
 package net.harnly.dendron.io
 import net.harnly.aaron.io.{Parser}
 
-trait GraphParser[Tgraph,Tedge,Tvertex,Ttoken,V,E <: Edge[V],G <: Graph[V,E]]
+trait GraphParser[Tgraph,Tedge,Tvertex,Ttoken,Mtoken,V,E <: Edge[V],G <: Graph[V,E]]
 extends Parser[Tgraph,Option[G]]
 {
-	def edgeParser: EdgeParser[Tedge,Tvertex,Ttoken,V,E]
-	def vertexParser: CachedVertexParser[Tvertex,Ttoken,V]
+	// -- abstract --
+	def edgeParser: EdgeParser[Tedge,Tvertex,Ttoken,Mtoken,V,E]
+	def vertexParser: CachedVertexParser[Tvertex,Ttoken,Mtoken,V]
+	
+	// -- supplied --
+	def freshCache: VertexCache[Mtoken,V] = VertexCache.empty[Mtoken,V]
 }
 
 trait GraphParserNoMetadata[
 	Tgraph, Tedge, Tvertex,
-	Ttoken, 
+	Ttoken, Mtoken,
 	V, E <: Edge[V], G <: Graph[V,E]
 ]
-extends GraphParser[Tgraph,Tedge,Tvertex,Ttoken,V,E,G]
+extends GraphParser[Tgraph,Tedge,Tvertex,Ttoken,Mtoken,V,E,G]
 {
 	def createGraph(vertices: Set[V], edges: Set[E]): Option[G]
 	def splitGraph(input: Tgraph): Option[(Seq[Tvertex], Seq[Tedge])]
-	def freshCache: VertexCache[Ttoken,V]
 	
 	def apply(input: Tgraph): Option[G] = splitGraph(input).flatMap { splitTuple =>
 		val (vertexInputs, edgeInputs) = splitTuple
@@ -50,14 +53,14 @@ extends GraphParser[Tgraph,Tedge,Tvertex,Ttoken,V,E,G]
 trait GraphParserWithMetadata[
 	Tgraph, Tedge, Tvertex,
 	Ttoken, Tmetadata,
-	Mgraph, V, E <: Edge[V], G <: Graph[V,E]
+	Mgraph, Mtoken,
+	V, E <: Edge[V], G <: Graph[V,E]
 ]
-extends GraphParser[Tgraph,Tedge,Tvertex,Ttoken,V,E,G]
+extends GraphParser[Tgraph,Tedge,Tvertex,Ttoken,Mtoken,V,E,G]
 {
 	def createGraph(vertices: Set[V], edges: Set[E], metadata: Mgraph): Option[G]
 	def splitGraph(input: Tgraph): Option[(Seq[Tvertex], Seq[Tedge], Tmetadata)]
 	def parseMetadata(input: Tmetadata): Option[Mgraph]
-	def freshCache: VertexCache[Ttoken,V]
 	
 	def apply(input: Tgraph): Option[G] = splitGraph(input).flatMap { splitTuple =>
 		val (vertexInputs, edgeInputs, metadataInput) = splitTuple
