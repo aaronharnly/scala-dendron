@@ -22,7 +22,12 @@ extends EdgeParser[Tedge,Tvertex,Ttoken,Mtoken,V,E]
 		) yield (edge -> v2Tuple._2)
 }
 
-trait EdgeParserWithMetadata[Tedge,Tvertex,Ttoken,Tmetadata,Medge, Mtoken, V, E <: Edge[V]]
+trait EdgeParserWithMetadata[
+	Tedge,Tvertex,
+	Ttoken,Tmetadata,
+	Medge, Mtoken, 
+	V, E <: Edge[V]
+]
 extends EdgeParser[Tedge,Tvertex,Ttoken,Mtoken,V,E]
 {
 	def createEdge(v1: V, v2: V, metadata: Medge): Option[E]

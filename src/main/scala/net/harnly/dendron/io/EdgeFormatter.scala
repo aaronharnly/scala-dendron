@@ -25,7 +25,11 @@ extends EdgeFormatter[V,E,Tvertex,Tedge]
 	edge ->: extractVertices _ ->: formatVertices _ ->: {x: (Tvertex,Tvertex) => formatWithFormattedVertices( x._1, x._2 )}
 }
 
-trait EdgeFormatterWithMetadata[V,E <: Edge[V],Medge,Tmetadata,Tvertex,Tedge]
+trait EdgeFormatterWithMetadata[
+	V,E <: Edge[V],
+	Medge,Tmetadata,
+	Tvertex,Tedge
+]
 extends EdgeFormatter[V,E,Tvertex,Tedge]
 {
 	// -- abstract --
@@ -45,7 +49,11 @@ extends EdgeFormatter[V,E,Tvertex,Tedge]
 	}
 }
 
-trait EdgeFormatterTokenOnly[V,E <: Edge[V],Mtoken,Ttoken,Tvertex,Tedge] 
+trait EdgeFormatterTokenOnly[
+	V,E <: Edge[V],
+	Mtoken,Ttoken,
+	Tvertex,Tedge
+] 
 extends EdgeFormatter[V,E,Tvertex,Tedge]
 {
 	def vertexFormatter: VertexFormatterTokenOnly[V,Mtoken,Ttoken,Tvertex]
