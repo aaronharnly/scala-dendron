@@ -7,8 +7,8 @@ extends GraphFormatterNoMetadata[V,E,G,String,String,String]
 		formattedVertices: Seq[String],
 		formattedEdges: Seq[String]
 	): String = 
-	"graph G {\n" +
-	formattedVertices.mkString(";\n") +
+	"digraph G {\n" +
+//	formattedVertices.mkString(";\n") +
 	formattedEdges.mkString(";\n") +
 	"}\n"
 }
