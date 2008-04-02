@@ -31,6 +31,3 @@ with EdgeFormatterTokenOnly[V,E,String,MetaData,Node,Node]
 abstract class EdgeFormatterXMLUndirected[V, E <: Edge[V]]
 extends EdgeFormatterXML[V,E]("oneVertex","otherVertex")
 
-abstract class EdgeFormatterXMLDirected[V, E <: DirectedEdge[V]]
-extends EdgeFormatterXML[V,E]("tail","head")
-

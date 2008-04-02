@@ -10,11 +10,11 @@ abstract class GraphParserXML[V, E <: net.harnly.dendron.Edge[V], G <: net.harnl
 extends net.harnly.dendron.io.GraphParserWithMetadata[
 	Node, Node, Node,
 	String, MetaData,
-	Map[String,String], V, E, G
+	Map[String,String], String,
+    V, E, G
 ]
 {
 	// -- supplied --
-	def freshCache: VertexCache[String,V] = VertexCache.empty[String,V]
 	def parseMetadata(input: MetaData) = Some(metadataToMap(input))
 
 	def splitGraph(input: Node): Option[(Seq[Node], Seq[Node], MetaData)] = for(
