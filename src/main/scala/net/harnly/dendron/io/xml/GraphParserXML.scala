@@ -9,7 +9,7 @@ import net.harnly.aaron.utilities.XMLUtilities._
 abstract class GraphParserXML[V, E <: net.harnly.dendron.Edge[V], G <: net.harnly.dendron.Graph[V,E]]
 extends net.harnly.dendron.io.GraphParserWithMetadata[
 	Node, Node, Node,
-	String, MetaData,
+	MetaData, MetaData,
 	Map[String,String], String,
     V, E, G
 ]
