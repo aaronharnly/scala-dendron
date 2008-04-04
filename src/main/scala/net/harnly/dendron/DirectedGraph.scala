@@ -12,11 +12,11 @@ extends Graph[V,E]
 	def removeEdge(edge: E): DirectedGraph[V,E]
 	
 	// -- supplied --
-	def incomingEdgesOf(vertex: V): Set[E] =
-	edges.filter(_.head == vertex)
+	def incomingEdgesOf(vertex: V): Set[E] = edges.filter(_.head == vertex)
+	def outgoingEdgesOf(vertex: V): Set[E] = edges.filter(_.tail == vertex)
 	
-	def outgoingEdgesOf(vertex: V): Set[E] =
-	edges.filter(_.tail == vertex)
+	def outgoingTargetsOf(vertex: V): Set[V] = outgoingEdgesOf(vertex).map(_.head)
+	def incomingSourcesOf(vertex: V): Set[V] = incomingEdgesOf(vertex).map(_.tail)
 
 	def indegreeOf(vertex: V): Int = incomingEdgesOf(vertex).size
 	def outdegreeOf(vertex: V): Int = outgoingEdgesOf(vertex).size

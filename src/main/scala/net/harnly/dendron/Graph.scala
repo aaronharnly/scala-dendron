@@ -1,6 +1,10 @@
 package net.harnly.dendron
 import scala.collection.immutable.{HashSet}
 
+/**
+ * Basic graph trait. Note that some of the provided implementations have
+ * truly atrocious performance on the naive set-based data.
+ */
 trait Graph[V, E <: Edge[V]]
 {
 	def vertices: Set[V]
@@ -35,6 +39,7 @@ trait Graph[V, E <: Edge[V]]
 		)
 	}
 	
+	// O(E)
 	def verticesInEdges: Set[V] = 
 		edges.foldLeft(Set.empty[V])( (set, edge) =>
 			set ++ edge

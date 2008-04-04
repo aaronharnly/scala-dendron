@@ -1,51 +1,51 @@
 package net.harnly.dendron
+import net.harnly.dendron.datatypes.EdgeMap._
 
 case class SimpleGraph[V, E <: Edge[V]](
 	vertices: Set[V],
-	edges: Set[E]
+	edges: Set[E],
+	private val undirectedEdgeMap: EdgeMap[V,E]
 )
 extends Graph[V,E]
 {
 	override def self: SimpleGraph[V,E] = this
 	
-	def this(vertexList: Seq[V], edgeList: Seq[E]) = this(
-		collection.immutable.Set(vertexList : _*) ,
-		collection.immutable.Set(edgeList : _*) 
-	)
+	// information overrides
+	override def edgesOf(vertex: V): Set[E] = getSubvaluesAsSet(undirectedEdgeMap, vertex)
+	override def edgesOf(vertex1: V, vertex2: V): Set[E] = getSubvalueAsSet(undirectedEdgeMap, vertex1, vertex2)
+	override def verticesInEdges: Set[V] = getKeysAsSet(undirectedEdgeMap)
+	override def neighborsOf(vertex: V): Set[V] = getSubkeysAsSet(undirectedEdgeMap, vertex)
 	
 	// mutators
 	def addVertex(vertex: V): SimpleGraph[V,E] = new SimpleGraph(
 		vertices + vertex,
-		edges
+		edges,
+		undirectedEdgeMap
 	)
 
 	def addEdge(edge: E): SimpleGraph[V,E] = 
 		new SimpleGraph(
 			vertices ++ edge.vertices,
-			edges + edge
+			edges + edge,
+			addUndirectedEdge(undirectedEdgeMap, edge)
 		)
 
 	def removeVertex(vertex: V): SimpleGraph[V,E] = {
 		val touchingEdges = edgesOf(vertex)
+		
 		new SimpleGraph(
 			vertices - vertex,
-			edges -- touchingEdges
+			edges -- touchingEdges,
+			removeUndirectedEdges(undirectedEdgeMap, touchingEdges.toList : _*)
 		)
 	}
 
-	def removeEdge(edge: E): SimpleGraph[V,E] = {
-		// remove the edge, and also the vertices if this is the only edge with the vertex
-		val newEdges = edges - edge
-		val verticesToRemove = edge.filter{ v =>
-			! newEdges.exists( e =>
-				e.contains(v)
-			)
-		}
+	def removeEdge(edge: E): SimpleGraph[V,E] = 
 		new SimpleGraph(
-			vertices -- verticesToRemove,
-			newEdges
+			vertices,
+			edges - edge,
+			removeUndirectedEdge(undirectedEdgeMap, edge)
 		)
-	}
 
 }
 
@@ -53,7 +53,9 @@ object SimpleGraph
 {
 	def empty[V,E <: Edge[V]] = new SimpleGraph(
 		Set.empty[V],
-		Set.empty[E]
+		Set.empty[E],
+		Map.empty[V,Map[V,E]]
 	)
+	
 }	
 

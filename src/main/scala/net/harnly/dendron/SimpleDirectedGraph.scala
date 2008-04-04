@@ -1,52 +1,63 @@
 package net.harnly.dendron
 
-class SimpleDirectedGraph[V, E <: DirectedEdge[V]](
+import net.harnly.dendron.datatypes.EdgeMap._
+
+case class SimpleDirectedGraph[V, E <: DirectedEdge[V]](
 	override val vertices: Set[V],
-	override val edges: Set[E]
+	override val edges: Set[E],
+	private val undirectedEdgeMap: EdgeMap[V,E],
+	private val outgoingEdgeMap: DirectedEdgeMap[V,E],
+	private val incomingEdgeMap: DirectedEdgeMap[V,E]
 )
-extends SimpleGraph(vertices, edges)
-with DirectedGraph[V,E]
+extends DirectedGraph[V,E]
 {
 	override def self: SimpleDirectedGraph[V,E] = this
-	def this(vertexList: Seq[V], edgeList: Seq[E]) = this(
-		collection.immutable.Set(vertexList : _*) ,
-		collection.immutable.Set(edgeList : _*) 
-	)
+
+	// information overrides
+	override def incomingEdgesOf(vertex: V): Set[E] = getSubvaluesAsSet(incomingEdgeMap, vertex)
+	override def outgoingEdgesOf(vertex: V): Set[E] = getSubvaluesAsSet(outgoingEdgeMap, vertex)
 
 	// mutators
-	override def addVertex(vertex: V): SimpleDirectedGraph[V,E] = new SimpleDirectedGraph(
+	def addVertex(vertex: V): SimpleDirectedGraph[V,E] = new SimpleDirectedGraph(
 		vertices + vertex,
-		edges
+		edges,
+		undirectedEdgeMap,
+		outgoingEdgeMap,
+		incomingEdgeMap
 	)
 
-	override def addEdge(edge: E): SimpleDirectedGraph[V,E] = 
+	def addEdge(edge: E): SimpleDirectedGraph[V,E] = 
 		new SimpleDirectedGraph(
 			vertices ++ edge.vertices,
-			edges + edge
+			edges + edge,
+			addUndirectedEdge(undirectedEdgeMap, edge),
+			addDirectedOutgoingEdge(outgoingEdgeMap, edge),
+			addDirectedIncomingEdge(incomingEdgeMap, edge)
 		)
 
-	override def removeVertex(vertex: V): SimpleDirectedGraph[V,E] = 
+	def removeVertex(vertex: V): SimpleDirectedGraph[V,E] = {
+		val touchingEdges = edgesOf(vertex)
+	
 		new SimpleDirectedGraph(
 			vertices - vertex,
-			edges -- edgesOf(vertex)
-		)
-
-	override def removeEdge(edge: E): SimpleDirectedGraph[V,E] = {
-		// remove the edge, and also the vertices if this is the only edge with the vertex
-		val newEdges = edges - edge
-		val verticesToRemove = edge.filter{ v =>
-			! newEdges.exists( e =>
-				e.contains(v)
-			)
-		}
-		new SimpleDirectedGraph(
-			vertices -- verticesToRemove,
-			newEdges
+			edges -- edgesOf(vertex),
+			removeUndirectedEdges(undirectedEdgeMap, touchingEdges.toList : _*),
+			removeDirectedOutgoingEdges(outgoingEdgeMap, outgoingEdgesOf(vertex).toList : _*),
+			removeDirectedIncomingEdges(incomingEdgeMap, incomingEdgesOf(vertex).toList : _*),
 		)
 	}
 
-	override def addEdges(edges: E*): SimpleDirectedGraph[V,E] = 
-	edges.foldLeft(self)( _.addEdge(_))
+	def removeEdge(edge: E): SimpleDirectedGraph[V,E] = 
+		new SimpleDirectedGraph(
+			vertices,
+			edges - edge,
+			removeUndirectedEdge(undirectedEdgeMap, edge),
+			removeDirectedOutgoingEdge(outgoingEdgeMap, edge),
+			removeDirectedIncomingEdge(incomingEdgeMap, edge)
+		)
+	
+
+	override def addEdges(edges: E*): SimpleDirectedGraph[V,E] = edges.foldLeft(self)( _.addEdge(_))
 	
 }
 
@@ -54,6 +65,9 @@ object SimpleDirectedGraph
 {
 	def empty[V,E <: DirectedEdge[V]] = new SimpleDirectedGraph(
 		Set.empty[V],
-		Set.empty[E]
-	)
+		Set.empty[E],
+		Map.empty[V, Map[V,E]],
+		Map.empty[V, Map[V,E]],
+		Map.empty[V, Map[V,E]]
+	)	
 }	
