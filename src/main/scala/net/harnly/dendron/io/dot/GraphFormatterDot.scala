@@ -12,3 +12,19 @@ extends GraphFormatterNoMetadata[V,E,G,String,String,String]
 	formattedEdges.mkString(";\n") +
 	"}\n"
 }
+
+class GraphFormatterDotDirectedTrivial[V, E <: DirectedEdge[V], G <: DirectedGraph[V,E]]
+extends GraphFormatterDot[V,E,G]
+{
+	val vertexFormatter = new VertexFormatterDotTrivial[V]
+	val edgeFormatter = new EdgeFormatterDotDirectedTrivial[V,E]
+}
+
+class GraphFormatterDotDirectedTrivialWithVertexMetadata[V, E <: DirectedEdge[V], G <: DirectedGraph[V,E]](
+	vertexMetadata: Map[V, Map[String,String]]
+)
+extends GraphFormatterDot[V,E,G]
+{
+	val vertexFormatter = new VertexFormatterDotTrivialWithMetadata[V](vertexMetadata)
+	val edgeFormatter = new EdgeFormatterDotDirectedTrivial[V,E]
+}

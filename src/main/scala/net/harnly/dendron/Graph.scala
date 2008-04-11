@@ -30,12 +30,19 @@ trait Graph[V, E <: Edge[V]]
 		edges.filter(_.contains(vertex))
 
 	// O(E)
-	def edgesOf(vertex1: V, vertex2: V): Set[E] = {
+	def edgesTouching(vertex1: V, vertex2: V): Set[E] = {
 		val verticesWeWant = List(vertex1, vertex2)
 		edges.filter( e =>
 			verticesWeWant.forall( v =>
 				e.contains(v)
 			)
+		)
+	}
+	// O(E)
+	def getEdgeTouching(vertex1: V, vertex2: V): Option[E] = {
+		val verticesWeWant = List(vertex1, vertex2)
+		edges.find( e =>
+			verticesWeWant.forall(v => e.contains(v))
 		)
 	}
 	
@@ -66,7 +73,7 @@ trait Graph[V, E <: Edge[V]]
 	edges.foldLeft(self)( _.removeEdge(_))
 
 	def removeEdge(vertex1: V, vertex2: V): Graph[V,E] = 
-	edgesOf(vertex1, vertex2).foldLeft(self)( _.removeEdge(_))
+	edgesTouching(vertex1, vertex2).foldLeft(self)( _.removeEdge(_))
 
 	def +(vertex: V) = addVertex(vertex)
 	def +(edge: E) = addEdge(edge)

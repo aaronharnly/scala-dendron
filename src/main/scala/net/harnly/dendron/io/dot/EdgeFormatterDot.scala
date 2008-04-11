@@ -22,6 +22,13 @@ extends EdgeFormatterDot[V,E](" -- ")
 abstract class EdgeFormatterDotDirected[V, E <: DirectedEdge[V]]
 extends EdgeFormatterDot[V,E](" -> ")
 
+class EdgeFormatterDotDirectedTrivial[V, E <: DirectedEdge[V]]
+extends EdgeFormatterDotDirected[V,E]
+{
+	val vertexFormatter = new VertexFormatterDotTrivial[V]
+	def extractMetadata(input: E) = Map.empty[String,String]
+}
+
 object DotMetadataRenderer
 {
 	def apply(data: Map[String,String]): String = data.map( pair =>

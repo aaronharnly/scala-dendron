@@ -23,6 +23,21 @@ extends VertexFormatter[V,String]
 	formatToken(extractToken(input)) + " " + formatMetadata(extractMetadata(input))
 }
 
+class VertexFormatterDotTrivial[V]
+extends VertexFormatterDotTokenOnly[V]
+{
+	def extractToken(input: V) = input.toString
+}
+
+class VertexFormatterDotTrivialWithMetadata[V](
+	metadataMap: Map[V, Map[String,String]]
+)
+extends VertexFormatterDot[V]
+{
+	def extractToken(input: V) = input.toString
+	def extractMetadata(input: V): Map[String,String] = metadataMap.get(input).getOrElse(Map.empty[String,String])
+}
+
 object DotVertexRenderer
 {
 	def formatToken(tokenInput: String) = "\"" + tokenInput + "\""

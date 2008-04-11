@@ -8,6 +8,9 @@ object EdgeMap
 	type DirectedEdgeMap[V,E <: DirectedEdge[V]] = EdgeMap[V,E]
 	
 	// --- Undirected ---
+	def createUndirectedWithEdges[V, E <: Edge[V]](edges: Seq[E]) = 
+		addUndirectedEdges(Map.empty[V,Map[V,E]], edges : _*)
+	
 	def addUndirectedEdge[V, E <: Edge[V]](edgeMap: EdgeMap[V,E], edge: E): EdgeMap[V,E] = {
 		val (v1, v2) = edge.orderedVertices
 		addToDoubleMap(
@@ -42,6 +45,9 @@ object EdgeMap
 
 	// --- Directed ---
 	// -- out
+	def createDirectedOutgoingWithEdges[V, E <: DirectedEdge[V]](edges: Seq[E]) = 
+		addDirectedOutgoingEdges(Map.empty[V,Map[V,E]], edges : _*)
+
 	def addDirectedOutgoingEdge[V, E <: DirectedEdge[V]](edgeMap: DirectedEdgeMap[V,E], edge: E): DirectedEdgeMap[V,E] = 
 		addToDoubleMap(edgeMap, edge.tail, edge.head -> edge)
 	
@@ -55,6 +61,9 @@ object EdgeMap
 		applyRepeatedly(edgeMap, removeDirectedOutgoingEdge[V,E], edges : _*)
 
 	// -- in
+	def createDirectedIncomingWithEdges[V, E <: DirectedEdge[V]](edges: Seq[E]) = 
+		addDirectedIncomingEdges(Map.empty[V,Map[V,E]], edges : _*)
+
 	def addDirectedIncomingEdge[V, E <: DirectedEdge[V]](edgeMap: DirectedEdgeMap[V,E], edge: E): DirectedEdgeMap[V,E] = 
 		addToDoubleMap(edgeMap, edge.head, edge.tail -> edge)
 
@@ -69,6 +78,8 @@ object EdgeMap
 
 
 	// -- general --
+	def emptyDoubleMap[A,B] = Map.empty[A, Map[A, B]]
+	
 	def applyRepeatedly[A, B, X](
 		input: DoubleMap[A,B], 
 		method: (DoubleMap[A,B], X) => DoubleMap[A,B],

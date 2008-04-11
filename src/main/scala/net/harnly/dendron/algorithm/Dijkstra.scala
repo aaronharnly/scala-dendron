@@ -31,6 +31,8 @@ object Dijkstra
 		bestDistanceFinder: (Option[Int],Option[Int]) => Option[Int],
 		neighborFinder: (G,V) => Set[E]
 	): IMap[V,Option[Int]] = {
+//		System.err.println("\n\n====== dijkstra ======")
+//		System.err.println(graph + "\n")
 		val distances = MMap.empty[V,Option[Int]]
 		val visited = scala.collection.mutable.Set.empty[V]
 		
@@ -44,12 +46,18 @@ object Dijkstra
 		
 		val Q = MHashSet( graph.vertices.toList : _*)
 		while (! Q.isEmpty) {
+//			System.err.println("Have queue: " + Q)
 			val u = extractBest[V](Q, distances, bestDistanceFinder)
+//			System.err.println("Extracted best vertex: " + u)
 			neighborFinder(graph, u).map( _.otherVertex(u)).filter(! visited.contains(_)).foreach { v =>
+//				System.err.println("\tConsidering neighbor " + v)
 				val alternateLength = distances(u).map( x => x + 1 )
-				distances += (v -> bestDistanceFinder(alternateLength, distances(v)))
+				val bestDistance = bestDistanceFinder(alternateLength, distances(v))
+//				System.err.println("\t\t-Between known distance " + distances(v) + " and alternative " + alternateLength + ", chose " + bestDistance)
+				distances += (v -> bestDistance)
 			}
 		}
+//		System.err.println("----- done ------\n")
 		IMap.empty[V,Option[Int]] ++ (distances)
 	}
 	
@@ -58,13 +66,20 @@ object Dijkstra
 		distances: MMap[V,Option[Int]],
 		bestDistanceFinder: (Option[Int],Option[Int]) => Option[Int]
 	): V = {
-		val bestDistance = distances.values.toList.foldLeft(None: Option[Int])( (best, item) =>
-			bestDistanceFinder(best, item)
-		)
-		val nextNode = set.find( v => 
-			distances(v) == bestDistance
-		).getOrElse(set.toList(0))
+//		System.err.println("\tKnown distances: " + distances)
+		val startingTuple: (Option[V],Option[Int]) = ((None,None))
+		val bestNodeAndDistance = set.foldLeft( startingTuple ){ (best, v) =>
+			val thisNodesDistance = distances(v)
+			val bestDistance = bestDistanceFinder(best._2, thisNodesDistance)
+			if (thisNodesDistance == bestDistance)
+				((Some(v), thisNodesDistance))
+			else
+				best
+		}
+		
+		val nextNode = bestNodeAndDistance._1.get
 		set -= nextNode
+//		System.err.println("\tBest distance is: " + bestNodeAndDistance._2 + " at " + nextNode)
 		nextNode
 	}
 	
@@ -75,12 +90,16 @@ object Dijkstra
 			case Some(y) => if (y < x) Some(y) else Some(x)
 		}
 	}
-	def maxOption(a: Option[Int], b: Option[Int]): Option[Int] = a match {
-		case None => b
-		case Some(x) => b match {
-			case None => Some(x)
-			case Some(y) => if (y > x) Some(y) else Some(x)
+	def maxOption(a: Option[Int], b: Option[Int]): Option[Int] = {
+		val best = a match {
+			case None => b
+			case Some(x) => b match {
+				case None => Some(x)
+				case Some(y) => if (y > x) Some(y) else Some(x)
+			}
 		}
+//		System.err.println("\t\tComparing [" + a + ", " + b + "]: chose " + best)
+		best
 	}
 	
 	

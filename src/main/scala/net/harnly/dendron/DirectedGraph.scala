@@ -10,8 +10,12 @@ extends Graph[V,E]
 
 	def removeVertex(vertex: V): DirectedGraph[V,E]	
 	def removeEdge(edge: E): DirectedGraph[V,E]
+	override def removeEdge(vertex1: V, vertex2: V): DirectedGraph[V,E] = 
+		getEdge(vertex1, vertex2).map(e => removeEdge(e)).getOrElse(this)
 	
 	// -- supplied --
+	def getEdge(vertex1: V, vertex2: V): Option[E] = edges.find(e => e.tail == vertex1 && e.head == vertex2)
+	
 	def incomingEdgesOf(vertex: V): Set[E] = edges.filter(_.head == vertex)
 	def outgoingEdgesOf(vertex: V): Set[E] = edges.filter(_.tail == vertex)
 	
