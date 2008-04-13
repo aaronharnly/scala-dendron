@@ -7,35 +7,50 @@ extends GraphAlgorithm[V,E,G,H]
 	def shouldKeepVertex(vertex: V): Boolean
 	def createEdge(v1: V, v2: V): E
 
+	// --- Finding vertices ---
+	def getNearestKeepersFrom(graph: G, verticesToKeep: Set[V], vertex: V): Set[V] = 
+		getDirectKeepersFrom(graph, verticesToKeep, vertex) ++
+		getIndirectKeepersFrom(graph, verticesToKeep, vertex)
+	
+	def getDirectKeepersFrom(graph: G, verticesToKeep: Set[V], vertex: V): Set[V] = 
+	graph.outgoingEdgesOf(vertex).map(e => e.head).filter(v =>
+		verticesToKeep.contains(v)
+	)
+	
+	def getDirectLosersFrom(graph: G, verticesToKeep: Set[V], vertex: V): Set[V] = 
+	graph.outgoingEdgesOf(vertex).map(e => e.head).filter(v =>
+		! verticesToKeep.contains(v)
+	)
+	
+	def getIndirectKeepersFrom(graph: G, verticesToKeep: Set[V], vertex: V): Set[V] = for(
+		loser <- getDirectLosersFrom(graph, verticesToKeep, vertex);
+		indirect <- getNearestKeepersFrom(graph, verticesToKeep, loser)
+	) yield indirect
+
+	// --- Finding edges ---
+	def getEdgesForKeeper(graph: G, verticesToKeep: Set[V], vertex: V): Set[E] = 
+	getDirectEdgesForKeeper(graph, verticesToKeep, vertex) ++
+	getIndirectEdgesForKeeper(graph, verticesToKeep, vertex)
+
+	// existing edges from this keeper to another keeper
+	def getDirectEdgesForKeeper(graph: G, verticesToKeep: Set[V], vertex: V): Set[E] =
+	getDirectKeepersFrom(graph, verticesToKeep, vertex).map(v =>
+		createEdge(vertex, v)
+	)
+	
+	// edges from this keeper, via non-keepers, to another keeper. 
+	def getIndirectEdgesForKeeper(graph: G, verticesToKeep: Set[V], vertex: V): Set[E] = 
+	getIndirectKeepersFrom(graph, verticesToKeep, vertex).map(v =>
+		createEdge(vertex, v)
+	)
+
 	def apply(graph: G): H = {
 		val verticesToKeep = graph.vertices.filter(shouldKeepVertex(_))
-		val keepList = verticesToKeep.toList
 		
-		def getFirstKeepersFrom(root: V): Set[V] = {
-			val outgoingEdges = graph.outgoingEdgesOf(root)
-			val targets = outgoingEdges.map(e => e.head)
-			val (keeperTargets, loserTargets) = targets.partition(verticesToKeep.contains(_))
-
-			// with the keepers targets, we'll add them to our set, and not explore them further
-			val directKeepers = Set(keeperTargets.toList : _*)
-			
-			// with the losers targets, we'll just add all of *those* losers' keepers, etc.
-			val indirectKeepers = for(
-				loser <- loserTargets;
-				indirect <- getFirstKeepersFrom(loser)
-			) yield indirect
-			
-			directKeepers ++ indirectKeepers
-		}
-
 		// from each keeper, find its first keeper neighbors.
 		// add an edge for each.
-		val edges = keepList.foldLeft(Set.empty[E]) { (set, keeper) =>
-			val targetsToAdd = getFirstKeepersFrom(keeper)
-			val edgesToAdd = targetsToAdd.map( t =>
-				createEdge(keeper, t)
-			)
-			set ++ edgesToAdd
+		val edges = verticesToKeep.toList.foldLeft(Set.empty[E]) { (set, keeper) =>
+			set ++ getEdgesForKeeper(graph, verticesToKeep, keeper)
 		}
 		createGraph(verticesToKeep, edges)
 	}
