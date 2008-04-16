@@ -23,8 +23,8 @@ with EdgeFormatterTokenOnly[V,E,String,MetaData,Node,Node]
 		"edge",
 		formattedMetadata,
 		TopScope,
-		simpleVertex(firstVertexLabel, v1),
-		simpleVertex(secondVertexLabel, v2)
+		simpleNode(firstVertexLabel, v1),
+		simpleNode(secondVertexLabel, v2)
 	)
 }
 
