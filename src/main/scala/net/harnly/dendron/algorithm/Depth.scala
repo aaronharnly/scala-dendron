@@ -10,7 +10,7 @@ object Depth
 		bar: E
 	): IMap[V,Option[Int]] = depth[V,E,G](
 		graph,
-		Dijkstra.minOption,
+		OptionMath.min,
 		foo, bar
 	)
 
@@ -20,7 +20,7 @@ object Depth
 		bar: E
 	): IMap[V,Option[Int]] = depth[V,E,G](
 		graph,
-		Dijkstra.maxOption,
+		OptionMath.max,
 		foo, bar
 	)
 
@@ -32,8 +32,8 @@ object Depth
 	): IMap[V,Option[Int]] = Dijkstra.multiDijkstra(
 		graph,
 		bestDistanceFinder,
-		{ g: G => FindRoots[V,E,G](g) },
-		{ (g: G,v: V) => g.outgoingEdgesOf(v) }
+		DirectedGraph.rootsOf[V,E,G],
+		DirectedGraph.outgoingEdgesOf[V,E,G]
 	)
 	
 }

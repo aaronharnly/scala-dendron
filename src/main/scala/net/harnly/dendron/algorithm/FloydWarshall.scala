@@ -5,6 +5,24 @@ import net.harnly.dendron.datatypes.EdgeMap._
 
 object FloydWarshall
 {
+	def undirectedAllPairsShortestPath[V, E <: Edge[V], G <: Graph[V,E]](
+		graph: G
+	): DoubleMap[V,Option[Int]] = allPairsShortestPath(
+		graph,
+		OptionMath.min,
+		Graph.neighbors[V,E,G],
+		Graph.edgeBetween[V,E,G]
+	)
+
+	def directedAllPairsShortestPath[V, E <: DirectedEdge[V], G <: DirectedGraph[V,E]](
+		graph: G
+	): DoubleMap[V,Option[Int]] = allPairsShortestPath(
+		graph,
+		OptionMath.min,
+		DirectedGraph.neighbors[V,E,G],
+		DirectedGraph.edgeBetween[V,E,G]
+	)
+	
 	def allPairsShortestPath[V, E <: Edge[V], G <: Graph[V,E]](
 		graph: G,
 		bestDistanceFinder: (Option[Int],Option[Int]) => Option[Int],
@@ -36,29 +54,15 @@ object FloydWarshall
 			distances = addToDoubleMap(
 				distances,
 				v1,
-				v2 -> minOption( 
-					getSubvalue(distances,v1, v2).map(x => x.get), 
-					optionAdd(
-						getSubvalue(distances,v1,k).map(x => x.get),
-						getSubvalue(distances,k,v2).map(x => x.get)
+				v2 -> bestDistanceFinder( 
+					getSubvalue(distances,v1, v2).flatMap(x => x), 
+					OptionMath.add(
+						getSubvalue(distances,v1,k).flatMap(x => x),
+						getSubvalue(distances,k,v2).flatMap(x => x)
 					)
 				)
 			)
 		}
 		distances
-	}
-
-	def optionAdd(a: Option[Int], b: Option[Int]): Option[Int] = for(
-		x <- a;
-		y <- b
-	) yield (x + y)
-	
-	def minOption(a: Option[Int], b: Option[Int]): Option[Int] = a match {
-		case None => b
-		case Some(x) => b match {
-			case None => Some(x)
-			case Some(y) => if (y < x) Some(y) else Some(x)
-		}
-	}
-	
+	}	
 }

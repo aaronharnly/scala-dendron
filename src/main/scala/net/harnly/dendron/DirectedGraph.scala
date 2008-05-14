@@ -15,6 +15,10 @@ extends Graph[V,E]
 	
 	// -- supplied --
 	def getEdge(vertex1: V, vertex2: V): Option[E] = edges.find(e => e.tail == vertex1 && e.head == vertex2)
+
+	def outgoingEdgesOf(vertex1: V, vertex2: V): Set[E] = Set(
+		getEdge(vertex1, vertex2).toList : _*
+	)
 	
 	def incomingEdgesOf(vertex: V): Set[E] = edges.filter(_.head == vertex)
 	def outgoingEdgesOf(vertex: V): Set[E] = edges.filter(_.tail == vertex)
@@ -26,3 +30,32 @@ extends Graph[V,E]
 	def outdegreeOf(vertex: V): Int = outgoingEdgesOf(vertex).size
 }
 
+object DirectedGraph
+{
+	def neighbors[V, E <: DirectedEdge[V], G <: DirectedGraph[V,E]](
+		graph: G, v: V
+	): Set[E] = graph.outgoingEdgesOf(v)
+
+	def edgeBetween[V, E <: DirectedEdge[V], G <: DirectedGraph[V,E]](
+		graph: G, v1: V, v2: V
+	): Option[E] = graph.getEdge(v1,v2)
+	
+	def incomingEdgesOf[V, E <: DirectedEdge[V], G <: DirectedGraph[V,E]](
+		graph: G, v: V
+	): Set[E] = graph.incomingEdgesOf(v)
+
+	def outgoingEdgesOf[V, E <: DirectedEdge[V], G <: DirectedGraph[V,E]](
+		graph: G, v: V
+	): Set[E] = graph.outgoingEdgesOf(v)
+	
+	
+	def rootsOf[V,E <: DirectedEdge[V],G <: DirectedGraph[V,E]](graph: G): Set[V] =
+	 graph.vertices.filter( v => 
+		(graph.indegreeOf(v) == 0)
+	)
+
+	def leavesOf[V,E <: DirectedEdge[V],G <: DirectedGraph[V,E]](graph: G): Set[V] =
+	graph.vertices.filter( v =>
+		(graph.outdegreeOf(v) == 0)
+	)
+}

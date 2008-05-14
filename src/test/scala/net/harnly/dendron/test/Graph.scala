@@ -1,7 +1,7 @@
 package net.harnly.dendron.test
 import net.harnly.dendron._
 import net.harnly.dendron.datatypes.EdgeMap._
-import net.harnly.dendron.algorithm.{Depth,Height,FindLeaves,FindRoots}
+import net.harnly.dendron.algorithm.{Depth,Height}
 import org.scalacheck._
 import Arbitrary._
 import Prop._
@@ -188,14 +188,14 @@ object graphSpec extends Specification {
 		
 		"3.4.1 Find one root" in {
 			treeGen must pass { g: IntGraph =>
-				val roots = FindRoots[Int,DirectedEdge[Int],IntGraph](g)
+				val roots = DirectedGraph.rootsOf[Int,DirectedEdge[Int],IntGraph](g)
 				roots.size must be(1)
 			}
 		}
 
 		"3.4.1 Find one root" in {
 			treeGen must pass { g: IntGraph =>
-				val roots = FindRoots[Int,DirectedEdge[Int],IntGraph](g)
+				val roots = DirectedGraph.rootsOf[Int,DirectedEdge[Int],IntGraph](g)
 				roots.size must be(1)
 			}
 		}

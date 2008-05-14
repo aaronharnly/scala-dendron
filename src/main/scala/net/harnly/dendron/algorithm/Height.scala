@@ -10,7 +10,7 @@ object Height
 		bar: E
 	): IMap[V,Option[Int]] = height[V,E,G](
 		graph,
-		Dijkstra.minOption,
+		OptionMath.min,
 		foo, bar
 	)
 
@@ -20,7 +20,7 @@ object Height
 		bar: E
 	): IMap[V,Option[Int]] = height[V,E,G](
 		graph,
-		Dijkstra.maxOption,
+		OptionMath.max,
 		foo, bar
 	)
 
@@ -32,7 +32,7 @@ object Height
 	): IMap[V,Option[Int]] = Dijkstra.multiDijkstra(
 		graph,
 		bestDistanceFinder,
-		{ g: G => FindLeaves[V,E,G](g) },
+		DirectedGraph.leavesOf[V,E,G],
 		{ (g: G,v: V) => g.incomingEdgesOf(v) }
 	)
 	

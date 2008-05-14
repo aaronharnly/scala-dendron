@@ -88,3 +88,12 @@ trait Graph[V, E <: Edge[V]]
 
 }
 
+object Graph
+{
+	def neighbors[V, E <: Edge[V], G <: Graph[V,E]](graph: G, v: V): Set[E] =
+	graph.edgesOf(v)
+	
+	def edgeBetween[V, E <: Edge[V], G <: Graph[V,E]](
+		graph: G, v1: V, v2: V
+	): Option[E] = graph.getEdgeTouching(v1, v2)
+}
