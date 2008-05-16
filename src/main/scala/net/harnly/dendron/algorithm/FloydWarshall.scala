@@ -32,6 +32,7 @@ object FloydWarshall
 
 		// Initialize the distance map
 		var distances = emptyDoubleMap[V,Option[Int]]
+		System.err.println("FloydWarshall: Initializing matrix...")
 		for(
 			v1 <- graph.vertices;
 			v2 <- graph.vertices
@@ -45,23 +46,31 @@ object FloydWarshall
 					v2 -> edgeFinder(graph, v1, v2).map( e => 1 )
 			)
 		}
+		System.err.println("FloydWarshall: done.")
+		val totalVertices = graph.vertices.size
+		var i = 1
 		
 		for (
-			k <- graph.vertices;
-			v1 <- graph.vertices;
-			v2 <- graph.vertices
-		) {
-			distances = addToDoubleMap(
-				distances,
-				v1,
-				v2 -> bestDistanceFinder( 
-					getSubvalue(distances,v1, v2).flatMap(x => x), 
-					OptionMath.add(
-						getSubvalue(distances,v1,k).flatMap(x => x),
-						getSubvalue(distances,k,v2).flatMap(x => x)
+			k <- graph.vertices
+		){
+				System.err.println("Refining: Step " + i + " of " + totalVertices)
+				for (
+					v1 <- graph.vertices;
+					v2 <- graph.vertices
+				) {
+					distances = addToDoubleMap(
+						distances,
+						v1,
+						v2 -> bestDistanceFinder( 
+							getSubvalue(distances,v1, v2).flatMap(x => x), 
+							OptionMath.add(
+								getSubvalue(distances,v1,k).flatMap(x => x),
+								getSubvalue(distances,k,v2).flatMap(x => x)
+							)
+						)
 					)
-				)
-			)
+				}
+				i += 1
 		}
 		distances
 	}	
