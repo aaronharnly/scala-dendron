@@ -9,8 +9,9 @@ object floydWarshallTest extends Specification
 {
 	import GraphGenerators._
 	import GraphTypes._
+
 	
-	"Floyd Warshall" should {
+	"Floyd Warshall with array" should {
 		"calculate shortest-path with two undirected nodes" in {
 			val g: IntUnGraph = new SimpleGraph(
 				List(1,2),
