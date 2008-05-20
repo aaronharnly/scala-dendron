@@ -52,7 +52,7 @@ object FloydWarshallWithArray
 					}
 			}
 		System.err.println("FloydWarshall: done.")
-		dumpArray(distances)
+//		dumpArray(distances)
 
 		var i = 1
 		
