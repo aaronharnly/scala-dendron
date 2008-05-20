@@ -19,6 +19,21 @@ case class IndexedArray2[K,V](array: Array[Array[V]], index: Map[K,Int])
 	) 
 }
 
+object IndexedArray2
+{
+	def createTabula[K,V](
+		labeler: K => String,
+		finder: String => Option[K],
+		maker: Int => Array[Array[V]]
+	)(
+		implicit valueTabula: Tabula[V,String]
+	): Tabula[IndexedArray2[K,V],Iterable[String]] = new IndexedArrayTabula[K,V](
+		labeler,
+		finder,
+		maker
+	)
+}
+
 // this thing kind of assumes square arrays
 class IndexedArrayTabula[K,V](
 	labeler: K => String,

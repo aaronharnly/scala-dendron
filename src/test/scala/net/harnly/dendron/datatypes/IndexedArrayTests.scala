@@ -44,7 +44,7 @@ object indexedArrayTest extends Specification
 		"Decode" in {
 			import net.harnly.tabula.Tabulae._
 			import net.harnly.tabula.StringPrimitiveTabulae._
-			implicit val tabula: Tabula[IndexedArray2[String,Int],Iterable[String]]  = new IndexedArrayTabula[String,Int](
+			implicit val tabula: Tabula[IndexedArray2[String,Int],Iterable[String]] = IndexedArray2.createTabula[String,Int](
 				identity,
 				{k: String => Some(k)},
 				{size: Int => new Array[Array[Int]](size,size)}
