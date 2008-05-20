@@ -27,6 +27,8 @@ object indexedArrayTest extends Specification
 			indexed("c","a") must_== 4
 			indexed("c","b") must_== 5
 			
+			indexed("b").toList must_== List(2,3)
+			
 		}
 	}
 }
