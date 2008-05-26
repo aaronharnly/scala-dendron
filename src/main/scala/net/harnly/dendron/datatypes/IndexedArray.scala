@@ -52,9 +52,9 @@ extends Tabula[IndexedArray2[K,V],Iterable[String]]
 		val labels = keysSorted.map(labeler)
 		val headerRow = "IndexedArray" + "\t" + labels.mkString("\t")
 
-		List(headerRow) ++ keysSorted.map( k_row =>
+		headerRow :: keysSorted.map ( k_row =>
 			labeler(k_row) + "\t" + keysSorted.map( k_col => 
-				valueTabula.encode( input(k_row)(k_col) )
+				valueTabula.encode( input(k_row,k_col) )
 			).mkString("\t")
 		)
 	}
