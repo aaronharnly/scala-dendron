@@ -64,6 +64,50 @@ object extractSpanningTreeSpec extends Specification
 					)
 			}}
 		}
+		"be full graph for diamond graph" in {
+			val g = SimpleDirectedGraph.fromPairs(
+				Set(1,2,3,4),
+				Set(
+					1 -> 2,
+					1 -> 3,
+					2 -> 4,
+					3 -> 4
+				)
+			)
+			ExtractSpanningTree.trimToRoot[Int,SimpleDirectedEdge[Int],SimpleIntGraph](
+				g, 4
+			) must_== SimpleDirectedGraph.fromPairs(
+				Set(1,2,3,4),
+				Set(
+					1 -> 2,
+					1 -> 3,
+					2 -> 4,
+					3 -> 4
+				)
+			)
+		}
+
+		"be three nodes for diamond graph with flap" in {
+			val g = SimpleDirectedGraph.fromPairs(
+				Set(1,2,3,4,5),
+				Set(
+					1 -> 2,
+					1 -> 3,
+					2 -> 4,
+					3 -> 4,
+					3 -> 5
+				)
+			)
+			ExtractSpanningTree.trimToRoot[Int,SimpleDirectedEdge[Int],SimpleIntGraph](
+				g, 5
+			) must_== SimpleDirectedGraph.fromPairs(
+				Set(1,3,5),
+				Set(
+					1 -> 3,
+					3 -> 5
+				)
+			)
+		}
 		
 	}
 }
