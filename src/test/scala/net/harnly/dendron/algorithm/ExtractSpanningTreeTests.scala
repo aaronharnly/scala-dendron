@@ -38,7 +38,7 @@ object extractSpanningTreeSpec extends Specification
 					g, vertex
 				) must_== SimpleDirectedGraph.fromPairs(
 					Set(vertex),
-					Set()
+					Set.empty[(Int,Int)]
 				)
 			}
 		}
@@ -60,7 +60,7 @@ object extractSpanningTreeSpec extends Specification
 						g, source
 					) must_== SimpleDirectedGraph.fromPairs(
 						Set(source),
-						Set()
+						Set.empty[(Int,Int)]
 					)
 			}}
 		}

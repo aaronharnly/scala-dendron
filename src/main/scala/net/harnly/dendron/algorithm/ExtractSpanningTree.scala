@@ -21,19 +21,19 @@ object ExtractSpanningTree
 	def verticesInPaths[V](
 		paths: Set[List[V]]
 	): Set[V] = paths.foldLeft(Set.empty[V]) { (sofar, path) =>
-		sofar + Set(path : _*)
+		sofar ++ Set(path : _*)
 	}
 	
 	def trimToRoot[V,E <: DirectedEdge[V],G <: DirectedGraph[V,E]](
 		graph: G,
 		vertices: V*
-	): G = {
+	): DirectedGraph[V,E] = {
 		val paths = vertices.foldLeft(Set.empty[List[V]])( (sofar, v) =>
 			sofar ++ pathsToRoot[V,E,G](graph, v)
 		)
 		val verticesToKeep = verticesInPaths(paths)
 		val verticesToRemove = graph.vertices -- verticesToKeep
-		verticesToRemove.foldLeft(graph) { (g, v) =>
+		verticesToRemove.foldLeft(graph: DirectedGraph[V,E]) { (g, v) =>
 			g.removeVertex(v)
 		}
 	}
