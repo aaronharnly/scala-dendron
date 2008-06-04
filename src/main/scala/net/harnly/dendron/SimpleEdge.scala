@@ -1,13 +1,13 @@
 package net.harnly.dendron
-import net.harnly.dendron.datatypes.{UnorderedPair,PairSet}
+import scala.collection.immutable.{Set2}
 
 case class SimpleEdge[V](
-	unorderedVertices: UnorderedPair[V]
+	unorderedVertices: Set2[V]
 )
 extends Edge[V]
 {
 	def this(a: V, b: V) = this(
-		PairSet(a,b)
+		new Set2(a,b)
 	)
 }
 
@@ -17,19 +17,19 @@ case class SimpleDirectedEdge[V](
 )
 extends DirectedEdge[V]
 {
-	val unorderedVertices = PairSet(tail, head)
+	override val unorderedVertices = new Set2(tail, head)
 	def invert = new SimpleDirectedEdge(head, tail)
 }
 
 case class SimpleWeightedEdge[V](
-	override val unorderedVertices: UnorderedPair[V],
+	override val unorderedVertices: Set2[V],
 	weight: Double
 )
 extends SimpleEdge(unorderedVertices)
 with WeightedEdge[V]
 {
 	def this(a: V, b: V, weight: Double) = this(
-		PairSet(a,b),
+		new Set2(a,b),
 		weight
 	)	
 }

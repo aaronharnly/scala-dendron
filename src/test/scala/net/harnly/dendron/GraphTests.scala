@@ -15,6 +15,37 @@ object graphSpec extends Specification {
 	import GraphGenerators._
 	import GraphTypes._
 	import org.scalacheck._
+	
+	"Undirected edges" should {
+		"be equal if they contain the same vertices, in any order" in {
+			val a = new SimpleEdge(1,2)
+			val b = new SimpleEdge(2,1)
+			a must_== b
+		}
+		"not be equal if they contain different vertices" in {
+			val a = new SimpleEdge(1,2)
+			val b = new SimpleEdge(1,3)
+			a must_!= b
+		}
+	}
+
+	"Directed edges" should {
+		"be equal if they contain the same vertices, in the same order" in {
+			val a = new SimpleDirectedEdge(1,2)
+			val b = new SimpleDirectedEdge(1,2)
+			a must_== b
+		}
+		"not be equal if they contain same vertices, in different order" in {
+			val a = new SimpleDirectedEdge(1,2)
+			val b = new SimpleDirectedEdge(2,1)
+			a must_!= b
+		}
+		"not be equal if they contain different vertices" in {
+			val a = new SimpleDirectedEdge(1,2)
+			val b = new SimpleDirectedEdge(1,3)
+			a must_!= b
+		}
+	}
 
 	"2.2.1 Directed Graph Model" should {
 		"2.2.1.1 Have zero vertices" in {

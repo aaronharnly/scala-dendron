@@ -1,5 +1,4 @@
 package net.harnly.dendron
-import net.harnly.dendron.datatypes.{UnorderedPair,PairSet}
 
 trait DirectedGraph[V, E <: DirectedEdge[V]]
 extends Graph[V,E]

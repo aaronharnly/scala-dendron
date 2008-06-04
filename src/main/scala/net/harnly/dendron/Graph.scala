@@ -81,6 +81,12 @@ trait Graph[V, E <: Edge[V]]
 	def -(vertex: V) = removeVertex(vertex)
 	def -(edge: E) = removeEdge(edge)
 
+	override def equals(obj: Any): Boolean = obj match {
+		case that: Graph[V,Edge[V]]  =>
+			this.vertices == that.vertices &&
+			this.edges == that.edges
+		case _ => false
+	}
 //	def ++(vertices: V*) = addVertices(vertices : _*)
 //	def ++(edges: E*) = addEdges(edges : _*)
 //	def --(vertices: V*) = removeVertices(vertices : _*)
