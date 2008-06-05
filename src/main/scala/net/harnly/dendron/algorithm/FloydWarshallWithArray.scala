@@ -2,8 +2,10 @@ package net.harnly.dendron.algorithm
 import scala.collection.mutable.{Map => MMap, HashMap => MHashMap, Set => MSet, HashSet => MHashSet}
 import scala.collection.immutable.{Map => IMap, HashMap => IHashMap}
 import net.harnly.dendron.datatypes.{IndexedArray2}
+import net.harnly.aaron.logging.{LazyLogging}
 
 object FloydWarshallWithArray
+extends LazyLogging
 {
 	def undirectedAllPairsShortestPath[V, E <: Edge[V], G <: Graph[V,E]](
 		graph: G
@@ -37,7 +39,7 @@ object FloydWarshallWithArray
 		
 		// Initialize the distance array
 		val distances = new Array[Array[Int]](totalVertices,totalVertices)
-		System.err.println("Array-backed FloydWarshall: Initializing matrix...")
+		logger.info("Initializing matrix...")
 		for (v1 <- vertices)
 			for (v2 <- vertices) {
 				val i1 = vertexIndex(v1)
@@ -51,8 +53,8 @@ object FloydWarshallWithArray
 						case Some(e) => 1
 					}
 			}
-		System.err.println("FloydWarshall: done.")
-//		dumpArray(distances)
+		logger.info("done.")
+		logger.trace(dumpArray(distances))
 
 		var i = 1
 		
@@ -60,7 +62,7 @@ object FloydWarshallWithArray
 			k <- vertices
 		){
 				val i_k = vertexIndex(k)
-				System.err.println("Refining: Step " + i + " of " + totalVertices)
+				logger.trace("Refining: Step " + i + " of " + totalVertices)
 				for (
 					v1 <- vertices;
 					v2 <- vertices
@@ -86,9 +88,11 @@ object FloydWarshallWithArray
 	else
 		a + b
 	
-	def dumpArray[A](input: Array[Array[A]]) {
+	def dumpArray[A](input: Array[Array[A]]): String = {
+		val sb = new StringBuilder
 		input.foreach( r => 
-			System.err.println(r.mkString(",")) 
+			sb.append(r.mkString(",") + "\n") 
 		)
+		sb.toString
 	}
 }

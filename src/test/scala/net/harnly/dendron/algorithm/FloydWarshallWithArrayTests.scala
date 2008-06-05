@@ -9,9 +9,13 @@ object floydWarshallWithArrayTest extends Specification
 {
 	import GraphGenerators._
 	import GraphTypes._
-
+	import org.apache.log4j.{BasicConfigurator,Logger,Level}
+	
+	BasicConfigurator.configure
+	
 	"Floyd Warshall with array" should {
 		"calculate shortest-path with two undirected nodes" in {
+			Logger.getRootLogger.setLevel(Level.TRACE)
 			val g: IntUnGraph = new SimpleGraph(
 				List(1,2),
 				List( new SimpleEdge(1,2) )
@@ -27,6 +31,7 @@ object floydWarshallWithArrayTest extends Specification
 		}
 
 		"calculate shortest-path with two directed nodes" in {
+			Logger.getRootLogger.setLevel(Level.TRACE)
 			val g: IntGraph = new SimpleDirectedGraph(
 				List(1,2),
 				List( new SimpleDirectedEdge(1,2) )
@@ -42,6 +47,7 @@ object floydWarshallWithArrayTest extends Specification
 		}
 
 		"calculate shortest-path with multiple directed parents" in {
+			Logger.getRootLogger.setLevel(Level.TRACE)
 			val g: IntGraph = new SimpleDirectedGraph(
 				List(1,2,3,4,5),
 				List( 
@@ -86,6 +92,7 @@ object floydWarshallWithArrayTest extends Specification
 
 
 		"calculate shortest-path with multiple directed parents and a shortcut" in {
+			Logger.getRootLogger.setLevel(Level.TRACE)
 			val g: IntGraph = new SimpleDirectedGraph(
 				List(1,2,3,4,5),
 				List( 

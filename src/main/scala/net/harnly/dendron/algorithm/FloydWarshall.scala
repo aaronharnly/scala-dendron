@@ -2,8 +2,10 @@ package net.harnly.dendron.algorithm
 import scala.collection.mutable.{Map => MMap, HashMap => MHashMap, Set => MSet, HashSet => MHashSet}
 import scala.collection.immutable.{Map => IMap, HashMap => IHashMap}
 import net.harnly.dendron.datatypes.EdgeMap._
+import net.harnly.aaron.logging.{LazyLogging}
 
 object FloydWarshall
+extends LazyLogging
 {
 	def undirectedAllPairsShortestPath[V, E <: Edge[V], G <: Graph[V,E]](
 		graph: G
@@ -32,7 +34,7 @@ object FloydWarshall
 
 		// Initialize the distance map
 		var distances = emptyDoubleMap[V,Option[Int]]
-		System.err.println("FloydWarshall: Initializing matrix...")
+		logger.info("Initializing matrix...")
 		for(
 			v1 <- graph.vertices;
 			v2 <- graph.vertices
@@ -46,14 +48,14 @@ object FloydWarshall
 					v2 -> edgeFinder(graph, v1, v2).map( e => 1 )
 			)
 		}
-		System.err.println("FloydWarshall: done.")
+		logger.info("done.")
 		val totalVertices = graph.vertices.size
 		var i = 1
 		
 		for (
 			k <- graph.vertices
 		){
-				System.err.println("Refining: Step " + i + " of " + totalVertices)
+				logger.trace("Refining: Step " + i + " of " + totalVertices)
 				for (
 					v1 <- graph.vertices;
 					v2 <- graph.vertices
