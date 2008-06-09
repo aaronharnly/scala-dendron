@@ -13,6 +13,19 @@
   <name>net.harnly:dendron</name>
   <inceptionYear>2008</inceptionYear>
 
+  <build>
+     <plugins>
+        <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-surefire-plugin</artifactId>
+         <configuration>
+            <forkmode>once</forkmode>
+            <argLine>-Xmx1g</argLine>
+         </configuration>
+        </plugin>
+     </plugins>
+  </build>
+
   <dependencies>
      <dependency>
        <groupId>net.harnly</groupId>

@@ -48,6 +48,10 @@ object GraphGenerators
 		)
 	)))
 
+	def uniqueList[T](implicit gen: Gen[T], p: Gen.Params): Option[List[T]] = for(
+		list <- Gen.listOf[T](gen).apply(p)
+	) yield list.removeDuplicates
+
 	def makeATree[T](gen: Gen[T])(p: Gen.Params): Option[DirectedGraph[T,DirectedEdge[T]]] = 
 	p.size match { 
 		case 0 => None
@@ -70,8 +74,37 @@ object GraphGenerators
 			)
 		)
 	}
+	
+	def makeALine[T](gen: Gen[T])(p: Gen.Params): Option[DirectedGraph[T,DirectedEdge[T]]] = 
+	p.size match { 
+		case 0 => None
+		
+		case _ => 
+			for(
+				vList <- uniqueList[T](gen,p)
+			) yield {
+				val vertices = Set( vList : _* )
+				val edges = Set( edgesBetween( vList ) : _* )
+				new SimpleDirectedGraph(
+					vertices,
+					edges
+				)
+			}
+	}
+	
+	def edgesBetween[V](list: List[V]): List[DirectedEdge[V]] = {
+		list match {
+			case Nil => Nil
+			case x :: Nil => Nil
+			case x :: y :: xs => new SimpleDirectedEdge[V](x, y) :: edgesBetween(y :: xs)
+		}
+	}
+	
 	def makeAnIntTree(p: Gen.Params) = makeATree[Int](Gen.choose(1,10000000))(p)
 	val treeGen = new Gen(makeAnIntTree)
+
+	def makeAnIntLine(p: Gen.Params) = makeALine[Int](Gen.choose(1,10000000))(p)
+	val lineGen = new Gen(makeAnIntLine)
 	
 	val dummyIntEdge = new SimpleDirectedEdge(1,1)
 }
