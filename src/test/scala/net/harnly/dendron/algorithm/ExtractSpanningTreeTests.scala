@@ -186,6 +186,7 @@ object extractSpanningTreeSpec extends Specification with LazyLogging
 				)
 			)
 		}
+		/*
 		"Scale to large sizes" in {
 			lineGen must pass { g: IntGraph =>
 				import org.apache.log4j.{BasicConfigurator,Logger,Level}
@@ -208,6 +209,7 @@ object extractSpanningTreeSpec extends Specification with LazyLogging
 				true
 			}(set(minSize -> 0, maxSize -> 3000))
 		}
+		*/
 		
 	}
 }
