@@ -6,3 +6,6 @@
 /.classpath
 /.manager
 /.settings
+*.iml
+*.ipr
+*.iws
